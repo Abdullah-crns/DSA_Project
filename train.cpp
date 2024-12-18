@@ -17,7 +17,7 @@ struct Station
 // Structure for each cabin node in the doubly linked list
 struct Cabin
 {
-    string cabin_name;
+    string cabin_name; //city name
     bool seat[10];
     Cabin *prev;
     Cabin *next;
