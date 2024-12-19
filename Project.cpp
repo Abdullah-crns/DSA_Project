@@ -7,23 +7,26 @@
 using namespace std;
 
 // Base class for Tickets
-class Ticket {
+class Ticket
+{
 protected:
     string ticketType; // Type of ticket (Train, Bus, Concert, etc.)
 public:
     Ticket(string type) : ticketType(type) {}
     virtual void displayOptions() = 0; // Display ticket options
-    virtual void bookTicket() = 0; // Book a ticket
-    virtual void cancelTicket() = 0; // Cancel a ticket
-    virtual void showDetails() = 0; // Show specific details of the ticket type
-    virtual ~Ticket() {} // Virtual destructor
+    virtual void bookTicket() = 0;     // Book a ticket
+    virtual void cancelTicket() = 0;   // Cancel a ticket
+    virtual void showDetails() = 0;    // Show specific details of the ticket type
+    virtual ~Ticket() {}               // Virtual destructor
 };
 
-class TrainTicket : public Ticket {
+class TrainTicket : public Ticket
+{
 public:
     TrainTicket() : Ticket("Train") {}
 
-    void displayOptions() override {
+    void displayOptions() override
+    {
         cout << "Displaying train station table...\n";
         cout << "-------------------------------------\n";
         cout << "| CITY      | DISTANCE | DEPARTURE TIME  | DEPARTURE DATE |\n";
@@ -34,19 +37,22 @@ public:
         cout << "-------------------------------------\n";
     }
 
-    void bookTicket() override {
+    void bookTicket() override
+    {
         cout << "Booking a train ticket...\n";
         // Placeholder for booking logic (e.g., input for choosing the city, date, and time)
         cout << "Please select a city from the available options.\n";
     }
 
-    void cancelTicket() override {
+    void cancelTicket() override
+    {
         cout << "Canceling a train ticket...\n";
         // Placeholder for cancellation logic (e.g., request for ticket details)
         cout << "Enter your ticket number to cancel your reservation.\n";
     }
 
-    void showDetails() override {
+    void showDetails() override
+    {
         cout << "Showing train ticket details...\n";
         // Placeholder for train-specific details (e.g., departure info, seat info, etc.)
         cout << "Ticket Type: " << ticketType << endl;
@@ -59,185 +65,221 @@ public:
 };
 
 // Bus Ticket class
-class BusTicket : public Ticket {
+class BusTicket : public Ticket
+{
 public:
     BusTicket() : Ticket("Bus") {}
 
-    void displayOptions() override {
+    void displayOptions() override
+    {
         cout << "Displaying bus station table...\n";
         // Placeholder for showing bus station details
     }
 
-    void bookTicket() override {
+    void bookTicket() override
+    {
         cout << "Booking a bus ticket...\n";
         // Placeholder for booking logic
     }
 
-    void cancelTicket() override {
+    void cancelTicket() override
+    {
         cout << "Canceling a bus ticket...\n";
         // Placeholder for cancellation logic
     }
 
-    void showDetails() override {
+    void showDetails() override
+    {
         cout << "Showing bus ticket details...\n";
         // Placeholder for bus-specific details
     }
 };
 
 // Concert Ticket class
-class ConcertTicket : public Ticket {
+class ConcertTicket : public Ticket
+{
 public:
     ConcertTicket() : Ticket("Concert") {}
 
-    void displayOptions() override {
+    void displayOptions() override
+    {
         cout << "Displaying concert options...\n";
         // Placeholder for concert options
     }
 
-    void bookTicket() override {
+    void bookTicket() override
+    {
         cout << "Booking a concert ticket...\n";
         // Placeholder for booking logic
     }
 
-    void cancelTicket() override {
+    void cancelTicket() override
+    {
         cout << "Canceling a concert ticket...\n";
         // Placeholder for cancellation logic
     }
 
-    void showDetails() override {
+    void showDetails() override
+    {
         cout << "Showing concert ticket details...\n";
         // Placeholder for concert-specific details
     }
 };
 
 // Cricket Match Ticket class
-class CricketMatchTicket : public Ticket {
+class CricketMatchTicket : public Ticket
+{
 public:
     CricketMatchTicket() : Ticket("Cricket Match") {}
 
-    void displayOptions() override {
+    void displayOptions() override
+    {
         cout << "Displaying cricket match options...\n";
         // Placeholder for cricket match options
     }
 
-    void bookTicket() override {
+    void bookTicket() override
+    {
         cout << "Booking a cricket match ticket...\n";
         // Placeholder for booking logic
     }
 
-    void cancelTicket() override {
+    void cancelTicket() override
+    {
         cout << "Canceling a cricket match ticket...\n";
         // Placeholder for cancellation logic
     }
 
-    void showDetails() override {
+    void showDetails() override
+    {
         cout << "Showing cricket match ticket details...\n";
         // Placeholder for cricket match-specific details
     }
 };
 
 // Movie Ticket class
-class MovieTicket : public Ticket {
+class MovieTicket : public Ticket
+{
 public:
     MovieTicket() : Ticket("Movie") {}
 
-    void displayOptions() override {
+    void displayOptions() override
+    {
         cout << "Displaying movie options...\n";
         // Placeholder for movie options
     }
 
-    void bookTicket() override {
+    void bookTicket() override
+    {
         cout << "Booking a movie ticket...\n";
         // Placeholder for booking logic
     }
 
-    void cancelTicket() override {
+    void cancelTicket() override
+    {
         cout << "Canceling a movie ticket...\n";
         // Placeholder for cancellation logic
     }
 
-    void showDetails() override {
+    void showDetails() override
+    {
         cout << "Showing movie ticket details...\n";
         // Placeholder for movie-specific details
     }
 };
 
 // Main function
-int main() {
+int main()
+{
     int choice;
 
-    while (true) {
-        cout << "\n--- Ticket Reservation System ---\n";
-        cout << "1. Train Ticket\n";
-        cout << "2. Bus Ticket\n";
-        cout << "3. Concert Ticket\n";
-        cout << "4. Cricket Match Ticket\n";
-        cout << "5. Movie Ticket\n";
-        cout << "6. Exit\n";
-        cout << "Enter your choice: ";
+    do
+    {
+        cout << "---------------------------------------------\n";
+        cout << " WELCOME TO THE TICKETING RESERVATION SYSTEM \n";
+        cout << "---------------------------------------------\n";
+        cout << "1. ADMIN PANEL\n";
+        cout << "2. USER PANEL\n";
+        cout << "3. EXIT\n";
+        cout << "SELECT AN OPTION: ";
         cin >> choice;
 
-        Ticket* ticket = nullptr;
-
-        switch (choice) {
-            case 1:
-                ticket = new TrainTicket();
+        switch (choice)
+        {
+        case 1:
+        {
+            // Admin Panel
+            string username, password;
+            cout << "WELCOME TO ADMIN PANEL\n";
+            cout << "ENTER USERNAME: ";
+            cin >> username;
+            cout << "ENTER PASSWORD: ";
+            cin >> password;
+            if (username != "admin" || password != "xerox_123")
+            {
+                cout << "INVALID CREDENTIALS. ACCESS DENIED.\n";
                 break;
-            case 2:
-                ticket = new BusTicket();
-                break;
-            case 3:
-                ticket = new ConcertTicket();
-                break;
-            case 4:
-                ticket = new CricketMatchTicket();
-                break;
-            case 5:
-                ticket = new MovieTicket();
-                break;
-            case 6:
-                cout << "Exiting the system. Goodbye!\n";
-                return 0;
-            default:
-                cout << "Invalid choice. Try again.\n";
-                continue;
-        }
-
-        // Menu for each ticket type
-        int ticketChoice;
-        do {
-            cout << "\n--- " << " Ticket Menu ---\n";
-            cout << "1. Display Options\n";
-            cout << "2. Book Ticket\n";
-            cout << "3. Cancel Ticket\n";
-            cout << "4. Show Details\n";
-            cout << "5. Back to Main Menu\n";
-            cout << "Enter your choice: ";
-            cin >> ticketChoice;
-
-            switch (ticketChoice) {
-                case 1:
-                    ticket->displayOptions();
-                    break;
-                case 2:
-                    ticket->bookTicket();
-                    break;
-                case 3:
-                    ticket->cancelTicket();
-                    break;
-                case 4:
-                    ticket->showDetails();
-                    break;
-                case 5:
-                    cout << "Returning to main menu...\n";
-                    break;
-                default:
-                    cout << "Invalid choice. Try again.\n";
             }
-        } while (ticketChoice != 5);
+            else
+            {
+                int adminChoice;
+                do
+                {
+                    cout << "ACCESS GRANTED.\n";
+                    cout << "=============================================\n";
+                    cout << "1. CONCERT TICKET MANAGEMENT\n";
+                    cout << "2. TRAIN TICKET MANAGEMENT\n";
+                    cout << "3. BUS TICKET MANAGEMENT\n";
+                    cout << "4. CRICKET MATCH TICKET MANAGEMENT\n";
+                    cout << "5. MOVIE TICKET MANAGEMENT\n";
+                    cout << "6. EXIT\n";
+                    cout << "SELECT AN OPTION: ";
+                    cin >> adminChoice;
 
-        delete ticket; // Free allocated memory
-    }
+                    switch (adminChoice)
+                    {
+                    case 1:
+                        cout << "Managing Concert Tickets...\n";
+                        // Add logic here
+                        break;
+                    case 2:
+                        cout << "Managing Train Tickets...\n";
+                        // Add logic here
+                        break;
+                    case 3:
+                        cout << "Managing Bus Tickets...\n";
+                        // Add logic here
+                        break;
+                    case 4:
+                        cout << "Managing Cricket Match Tickets...\n";
+                        // Add logic here
+                        break;
+                    case 5:
+                        cout << "Managing Movie Tickets...\n";
+                        // Add logic here
+                        break;
+                    case 6:
+                        cout << "Exiting Admin Panel...\n";
+                        break;
+                    default:
+                        cout << "Invalid choice. Try again.\n";
+                        break;
+                    }
+                } while (adminChoice != 6);
+            }
+            break;
+        }
+        case 2:
+            cout << "USER PANEL UNDER CONSTRUCTION.\n";
+            break;
+        case 3:
+            cout << "Exiting the system. Goodbye!\n";
+            break;
+        default:
+            cout << "Invalid choice. Try again.\n";
+            break;
+        }
+    } while (choice != 3);
 
     return 0;
 }
