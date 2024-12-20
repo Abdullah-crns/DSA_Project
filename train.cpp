@@ -13,18 +13,37 @@ struct Station
     unordered_map<string, double> distances; // Distances to connected stations
     Station *next;
 };
-
+struct Seats
+{
+    string seat_no; // Seat number
+    bool isbooked;  // Seat booked status
+};
+struct Cabins
+{
+    Seats seats[6];  // 6 seats per cabin
+    string cabin_no; // Cabin number
+    bool isbooked;   // Cabin booked status
+};
+struct Coaches
+{
+    Cabins cabins[12]; // 12 cabins per coach
+    bool isbooked;     // Coach booked status
+    string Coach_no;   // Coach number
+};
 // Structure for tree node (Seats and Cabins)
 struct Reservation
 {
     string ticketID;
+    double price;
     string departureStation;
     string arrivalStation;
     string name;
     string gender;
-    double price;
     Reservation *left;
     Reservation *right;
+    Seats seats;
+    Cabins cabins;
+    Coaches Coach_no[15];
 };
 
 // Class for Train Ticket Reservation System
@@ -98,15 +117,79 @@ private:
     {
         if (!root)
             return;
+
         displayReservationsInOrder(root->left);
-        cout << "========================================\n";
-        cout << "| Ticket ID:         | " << root->ticketID << endl;
-        cout << "| Name:              | " << root->name << endl;
-        cout << "| Gender:            | " << root->gender << endl;
-        cout << "| Departure Station: | " << root->departureStation << endl;
-        cout << "| Arrival Station:   | " << root->arrivalStation << endl;
-        cout << "| Price:             | " << root->price << " PKR\n";
-        cout << "========================================\n";
+        for (int i = 0; i < 15; i++)
+        {
+            if (root->Coach_no[i].isbooked)
+            {
+                cout << "========================================\n";
+                cout << "            COACH RESERVATION           \n";
+                cout << "========================================\n";
+                cout << "| TICKET ID:            | " << root->ticketID << endl;
+                cout << "| NAME:                 | " << root->name << endl;
+                cout << "| GENDER:               | " << root->gender << endl;
+                cout << "| STATION OF DEPARTURE: | " << root->departureStation << endl;
+                cout << "| STATION OF ARRIVAL:   | " << root->arrivalStation << endl;
+                cout << "| COACH NUMBER:         | " << i + 1 << endl;
+                cout << "| PRICE:                | " << (root->price) * (72) << " PKR\n";
+                cout << "========================================\n";
+            }
+        }
+        for (int i = 0; i < 15; i++)
+        {
+            if (root->Coach_no[i].isbooked == false)
+            {
+                for (int j = 0; j < 12; j++)
+                {
+                    if (root->Coach_no[i].cabins[j].isbooked == true)
+                    {
+                        cout << "========================================\n";
+                        cout << "            CABIN RESERVATION           \n";
+                        cout << "========================================\n";
+                        cout << "| TICKET ID:            | " << root->ticketID << endl;
+                        cout << "| NAME:                 | " << root->name << endl;
+                        cout << "| GENDER:               | " << root->gender << endl;
+                        cout << "| STATION OF DEPARTURE: | " << root->departureStation << endl;
+                        cout << "| STATION OF ARRIVAL:   | " << root->arrivalStation << endl;
+                        cout << "| COACH NUMBER:         | " << i + 1 << endl;
+                        cout << "| CABIN NUMBER:         | " << j + 1 << endl;
+                        cout << "| PRICE:                | " << (root->price) * 6 << " PKR\n";
+                        cout << "========================================\n";
+                    }
+                }
+            }
+        }
+        for (int i = 0; i < 15; i++)
+        {
+            if (root->Coach_no[i].isbooked == false)
+            {
+                for (int j = 0; j < 12; j++)
+                {
+                    if (root->Coach_no[i].cabins[j].isbooked == false)
+                    {
+                        for (int k = 0; k < 6; k++)
+                        {
+                            if (root->Coach_no[i].cabins[j].seats[k].isbooked)
+                            {
+                                cout << "========================================\n";
+                                cout << "| TICKET ID:            | " << root->ticketID << endl;
+                                cout << "| NAME:                 | " << root->name << endl;
+                                cout << "| GENDER:               | " << root->gender << endl;
+                                cout << "| STATION OF DEPARTURE: | " << root->departureStation << endl;
+                                cout << "| STATION OF ARRIVAL:   | " << root->arrivalStation << endl;
+                                cout << "| COACH NUMBER:         | " << i + 1 << endl;
+                                cout << "| CABIN NUMBER:         | " << j + 1 << endl;
+                                cout << "| SEAT NUMBER:          | " << k + 1 << endl;
+                                cout << "| PRICE:                | " << root->price << " pkr\n";
+                                cout << "========================================\n";
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         displayReservationsInOrder(root->right);
     }
 
@@ -155,12 +238,15 @@ public:
             cout << "No stations available.\n";
             return;
         }
-        cout << "Available Stations:\n";
+        cout << "==========================\n";
+        cout << "AVAILABLE STATIONS:\n";
+        cout << "==========================\n";
         while (temp)
         {
             cout << "- " << temp->name << "\n";
             temp = temp->next;
         }
+        cout << "==========================\n";
     }
 
     // Admin: Edit a station
@@ -195,9 +281,13 @@ public:
     {
         displayStations();
         string departureStation, arrivalStation, name, gender;
+        int coach_number, cabin_number, seat_number;
+        Coaches Coach_no[15];
 
-        cout << "Enter your departure station: ";
+        cout << "ENTER YOUR CURRENT STATION NAME: \n";
+        cout << "=================================\n";
         cin >> departureStation;
+        cout << "=================================\n";
 
         // Find the departure station in the linked list
         Station *departureNode = stationHead;
@@ -209,57 +299,247 @@ public:
         // Check if the departure station exists
         if (!departureNode)
         {
-            cout << "Departure station not found. Please try again.\n";
+            cout << "STATION NOT FOUND [please try again]\n";
             return;
         }
 
         // Display the list of connected cities for the departure station
-        cout << "Cities connected to " << departureStation << ":\n";
+        cout << "CITIES CONNECTED TO " << departureStation << ":\n";
+        cout << "==============================\n";
         for (const auto &pair : departureNode->distances)
         {
             cout << "- " << pair.first << "\n"; // Display connected cities
         }
 
-        cout << "Enter your arrival station from the above list: ";
+        cout << "ENTER YOUR DESTINATION FROM THE ABOVE LIST : ";
         cin >> arrivalStation;
 
         // Check if the arrival station exists in the connected cities
         if (departureNode->distances.find(arrivalStation) == departureNode->distances.end())
         {
-            cout << "Invalid arrival station. Please try again.\n";
+            cout << "INVALID DESTINATION [please try again].\n";
             return;
         }
-
-        cout << "Enter your name: ";
-        cin >> name;
-        cout << "Enter your gender: ";
-        cin >> gender;
-
-        // Calculate the distance and price
         double distance = departureNode->distances[arrivalStation];
-        double price = distance * 11.67; // Price per km
+        double prices = distance * 11.67; // Price per km
 
         // Generate a unique ticket ID
         string ticketID = generateUniqueID();
 
-        // Create a new reservation
-        Reservation *newReservation = new Reservation{
-            ticketID, departureStation, arrivalStation, name, gender, price, nullptr, nullptr};
+        cout << "ENTER YOUR NAME: ";
+        cin >> name;
+        cout << "EnNTER YOUR GENDER: ";
+        cin >> gender;
 
-        // Insert the reservation into the BST
-        reservationRoot = insertReservation(reservationRoot, newReservation);
-        reservationMap[ticketID] = newReservation;
+        int reservation_option;
+        cout << "======================================\n";
+        cout << "1. RESERVE A SEAT" << endl;
+        cout << "2. RESERVE A CABIN [family seat]" << endl;
+        cout << "3. RESERVE A COACH" << endl;
+        cout << "======================================\n";
+        cout << "PLEASE ENTER YOUR RESERVATION OPTION : ";
+        cout << "======================================\n";
+        cin >> reservation_option;
+
+        if (reservation_option == 1)
+        {
+            cout << "AVAILABLE COACHES" << endl;
+            for (int i = 0; i < 15; i++)
+            {
+                if (!Coach_no[i].isbooked)
+                {
+                    cout << "| COACH NUMBER : " << i + 1 << " |" << endl;
+                }
+            }
+
+            cout << "--------------------------------------\n";
+            cout << "PLEASE ENTER THE COACH NUMBER : ";
+            cin >> coach_number;
+
+            if (coach_number < 1 || coach_number > 15)
+            {
+                cout << "INVALID COACH NUMBER [please enter a number from the above given list]\n";
+                return;
+            }
+
+            cout << "Available Cabins" << endl;
+            for (int i = 0; i < 12; i++)
+            {
+                if (!Coach_no[coach_number - 1].cabins[i].isbooked)
+                {
+                    cout << "Cabin Number: " << i + 1 << endl;
+                }
+            }
+
+            cout << "--------------------------------------\n";
+            cout << "PLEASE ENTER THE CABIN NUMBER: ";
+            cin >> cabin_number;
+
+            if (cabin_number < 1 || cabin_number > 12)
+            {
+                cout << "INVALID CABIN NUMBER\n";
+                return;
+            }
+
+            cout << "Available Seats" << endl;
+            for (int i = 0; i < 6; i++)
+            {
+                if (!Coach_no[coach_number - 1].cabins[cabin_number - 1].seats[i].isbooked)
+                {
+                    cout << "SEAT NUMBER: " << i + 1 << endl;
+                }
+            }
+
+            cout << "PLEASE ENTER THE SEAT NUMBER: ";
+            cin >> seat_number;
+
+            if (seat_number < 1 || seat_number > 6)
+            {
+                cout << "INVALID SEAT NUMBER\n";
+                return;
+            }
+
+            // Mark seat as booked
+            Coach_no[coach_number - 1].cabins[cabin_number - 1].seats[seat_number - 1].isbooked = true;
+
+            // Create a new reservation
+            Reservation *newReservation = new Reservation{
+                ticketID,
+                prices,
+                departureStation,
+                arrivalStation,
+                name,
+                gender,
+                nullptr,
+                nullptr,
+                Coach_no[coach_number - 1].cabins[cabin_number - 1].seats[seat_number - 1],
+                Coach_no[coach_number - 1].cabins[cabin_number - 1],
+                Coach_no[coach_number - 1]};
+
+            // Insert the reservation into the BST
+            reservationRoot = insertReservation(reservationRoot, newReservation);
+            reservationMap[ticketID] = newReservation;
+        }
+        else if (reservation_option == 2)
+        {
+            cout << "--------------------------------------\n";
+            cout << "AVAILABLE COACHES" << endl;
+            for (int i = 0; i < 15; i++)
+            {
+                if (!Coach_no[i].isbooked)
+                {
+                    cout << "| COACH NUMBER: " << i + 1 << " |" << endl;
+                }
+            }
+
+            cout << "--------------------------------------\n";
+            cout << "PLEASE ENTER THE COACH NUMBER: ";
+            cin >> coach_number;
+
+            if (coach_number < 1 || coach_number > 15)
+            {
+                cout << "INVALID COACH NUMBER\n";
+                return;
+            }
+
+            cout << "AVAILABLE CABINS IN COACH " << coach_number << endl;
+            for (int i = 0; i < 12; i++)
+            {
+                if (!Coach_no[coach_number - 1].cabins[i].isbooked)
+                {
+                    cout << "CABIN NUMBER: " << i + 1 << endl;
+                }
+            }
+
+            cout << "--------------------------------------\n";
+            cout << "PLEASE ENTER THE CABIN NUMBER: ";
+            cin >> cabin_number;
+
+            if (cabin_number < 1 || cabin_number > 12)
+            {
+                cout << "INVALID CABIN NUMBER\n";
+                return;
+            }
+            Coach_no[coach_number - 1].cabins[cabin_number - 1].isbooked = true;
+            Seats seat;
+            Reservation *newReservation = new Reservation{
+                ticketID,
+                prices,
+                departureStation,
+                arrivalStation,
+                name,
+                gender,
+                nullptr,
+                nullptr,
+                seat,
+                Coach_no[coach_number - 1].cabins[cabin_number - 1],
+                Coach_no[coach_number - 1]};
+
+            // Insert the reservation into the BST
+            reservationRoot = insertReservation(reservationRoot, newReservation);
+            reservationMap[ticketID] = newReservation;
+        }
+        else if (reservation_option == 3)
+        {
+            cout << "AVAILABLE COACHES" << endl;
+            for (int i = 0; i < 15; i++)
+            {
+                if (!Coach_no[i].isbooked)
+                {
+                    cout << "COACH NUMBER: " << i + 1 << endl;
+                }
+            }
+
+            cout << "PLEASE ENTER THE COACH NUMBER: ";
+            cin >> coach_number;
+
+            if (coach_number < 1 || coach_number > 15)
+            {
+                cout << "INVALID COACH NUMBER\n";
+                return;
+            }
+            Seats seat;
+            Cabins cabin;
+            Coach_no[coach_number - 1].isbooked = true;
+            Reservation *newReservation = new Reservation{
+                ticketID,
+                prices,
+                departureStation,
+                arrivalStation,
+                name,
+                gender,
+                nullptr,
+                nullptr,
+                seat,
+                cabin,
+                Coach_no[coach_number - 1]};
+
+            // Insert the reservation into the BST
+            reservationRoot = insertReservation(reservationRoot, newReservation);
+            reservationMap[ticketID] = newReservation;
+        }
+        else
+        {
+            cout << "INVALID RESERVATION OPTION" << endl;
+            return;
+        }
+
+        // Calculate the distance and price
 
         // Display the reservation details
-        cout << "Ticket Reserved Successfully!\n";
+        cout << "TICKET RESERVED SUCCESSFULY!\n";
         cout << "========================================\n";
-        cout << "| Ticket ID:         | " << ticketID << endl;
-        cout << "| Name:              | " << name << endl;
-        cout << "| Gender:            | " << gender << endl;
-        cout << "| Departure Station: | " << departureStation << endl;
-        cout << "| Arrival Station:   | " << arrivalStation << endl;
-        cout << "| Distance:          | " << distance << " km\n";
-        cout << "| Price:             | " << price << " PKR\n";
+        cout << "| TICKET ID:         | " << ticketID << endl;
+        cout << "| NAME:              | " << name << endl;
+        cout << "| GENDER:            | " << gender << endl;
+        cout << "| DEPARTURE STATION: | " << departureStation << endl;
+        cout << "| ARRIVAL STATION:   | " << arrivalStation << endl;
+        cout << "| DISTANCE:          | " << distance << " km\n";
+        cout << "| PRICE:             | " << prices << " PKR\n";
+        cout << "| COACH NUMBER:      | " << coach_number << endl;
+        cout << "| CABIN NUMBER:      | " << cabin_number << endl;
+        cout << "| SEAT NUMBER:       | " << seat_number << endl;
+        cout << "| DISTANCE:          | " << distance << " PKR\n";
         cout << "========================================\n";
     }
 
@@ -268,18 +548,18 @@ public:
     deleteTicket()
     {
         string ticketID;
-        cout << "Enter Ticket ID to delete: ";
+        cout << "ENTER THE TICKET ID TO DELETE IT: ";
         cin >> ticketID;
 
         if (reservationMap.find(ticketID) == reservationMap.end())
         {
-            cout << "No ticket found with ID " << ticketID << ".\n";
+            cout << "NO TICKET FOUND WITH ID : " << ticketID << ".\n";
             return;
         }
 
         reservationRoot = deleteReservation(reservationRoot, ticketID);
         reservationMap.erase(ticketID);
-        cout << "Reservation with Ticket ID " << ticketID << " deleted successfully.\n";
+        cout << "RESERVATION WITH TICKET ID " << ticketID << " DELETED SUCCESSFULLY.\n";
     }
 
     // User: Display all reservations
@@ -287,7 +567,7 @@ public:
     {
         if (!reservationRoot)
         {
-            cout << "No reservations found.\n";
+            cout << "NO RESERVATIONS FOUND.\n";
             return;
         }
         displayReservationsInOrder(reservationRoot);
@@ -371,7 +651,12 @@ int main()
             int userChoice;
             do
             {
-                cout << "\nUser Panel:\n1. Reserve Ticket\n2. Delete Ticket\n3. View Reservations\n4. Exit\nSelect an option: ";
+                cout << "========================================\n";
+                cout << "        TRAIN TICKET RESERVATION        \n";
+                cout << "========================================\n";
+                cout << "1. Reserve Ticket\n2. Delete Ticket\n3. View Reservations\n4. Exit\n";
+                cout << "========================================\n";
+                cout << "Select an option: ";
                 cin >> userChoice;
 
                 switch (userChoice)
@@ -386,7 +671,7 @@ int main()
                     system.displayReservations();
                     break;
                 case 4:
-                    cout << "Exiting User Panel.\n";
+                    cout << "EXITING THE TRAIN TICKET RESERVATION PANEL.\n";
                     break;
                 default:
                     cout << "Invalid choice. Try again.\n";
