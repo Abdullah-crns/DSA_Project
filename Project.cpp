@@ -8,6 +8,7 @@
 #include <list>
 #include <algorithm>
 #include <vector>
+#include <fstream>
 #include <iomanip>
 using namespace std;
 
@@ -745,15 +746,8 @@ public:
 //=============================================================END OF TRAIN TICKET Reservation_TrainCLASS=====================================================================
 
 //===========================================================================================================================================================================
-//                                                           CLASS FOR BUS TICKET Reservation_TrainSYSTEM
+//                                                                      BUS TICKET RESERVATION
 //===========================================================================================================================================================================
-
-
-
-
-
-
-
 // Structure for linked list node (Stations)
 struct Station_BUS
 {
@@ -768,9 +762,9 @@ struct Seats_BUS
 };
 struct Bus
 {
-    string busNumber; // Bus number
-    Seats_BUS Seats_BUS[44];  // 44 Seats_BUS per bus
-    bool isBooked;    // Bus booked status
+    string busNumber;        // Bus number
+    Seats_BUS Seats_BUS[44]; // 44 Seats_BUS per bus
+    bool isBooked;           // Bus booked status
     // You can add more attributes as needed
 };
 
@@ -790,8 +784,8 @@ struct Reservation_BUS
 struct AVLNode_BUS
 {
     Reservation_BUS *reservation_BUS; // Pointer to the reservation_BUS
-    AVLNode_BUS *left;                    // Left child
-    AVLNode_BUS *right;                   // Right child
+    AVLNode_BUS *left;                // Left child
+    AVLNode_BUS *right;               // Right child
     int height;                       // Height of the node
 };
 
@@ -847,13 +841,16 @@ AVLNode_BUS *leftRotate(AVLNode_BUS *x)
     return y;
 }
 // Structure for tree node (Seats_BUS and Cabins)
+//===========================================================================================================================================================================
+//                                                           CLASS FOR BUS TICKET Reservation_TrainSYSTEM
+//===========================================================================================================================================================================
 
 // Class for Train Ticket Reservation_BUSSystem
 class BusSystem
 {
 private:
-    Station_BUS *StationHead_BUS;                                    // Linked list for stations
-    AVLNode_BUS *reservationRoot_BUS;                                // Binary Search Tree for reservations
+    Station_BUS *StationHead_BUS;                                // Linked list for stations
+    AVLNode_BUS *reservationRoot_BUS;                            // Binary Search Tree for reservations
     unordered_map<string, Reservation_BUS *> reservationMap_BUS; // Map for quick ticket lookup
 
     // Generate unique ticket ID
@@ -1244,7 +1241,7 @@ public:
         int coach_number, cabin_number, seat_number;
         Bus Coach_no[4];
         cout << "========================================\n";
-        cout << "    ENTER YOUR CURRENT Station_BUS NAME: \n";
+        cout << "    ENTER YOUR CURRENT STATION NAME: \n";
         cout << "========================================\n";
         cin >> departureStation;
         cout << "========================================\n";
@@ -1259,7 +1256,7 @@ public:
         // Check if the departure Station_BUS exists
         if (!departureNode)
         {
-            cout << "Station_BUS NOT FOUND [please try again]\n";
+            cout << "STATION NOT FOUND [please try again]\n";
             return;
         }
 
@@ -1296,7 +1293,7 @@ public:
         cout << "1. RESERVE A SEAT" << endl;
         cout << "2. RESERVE A COMPLETE BUS " << endl;
         cout << "========================================\n";
-        cout << "  PLEASE ENTER YOUR Reservation_BUSOPTION  \n";
+        cout << "       PLEASE ENTER YOUR OPTION  \n";
         cout << "========================================\n";
         cin >> reservation_option;
 
@@ -1353,10 +1350,13 @@ public:
                 arrivalStation,
                 name,
                 gender,
-                Coach_no[coach_number - 1].Seats_BUS[seat_number - 1]};
+                Coach_no[coach_number - 1].Seats_BUS[seat_number - 1],
+                nullptr,
+                nullptr,
+            };
 
-                // Insert the Reservation_BUSinto the AVL
-                reservationRoot_BUS = insertReservation(reservationRoot_BUS, newReservation_BUS);
+            // Insert the Reservation_BUSinto the AVL
+            reservationRoot_BUS = insertReservation(reservationRoot_BUS, newReservation_BUS);
             reservationMap_BUS[ticketID] = newReservation_BUS;
             cout << "========================================\n";
             cout << "       TICKET RESERVED SUCCESSFULY!\n";
@@ -1364,14 +1364,15 @@ public:
             cout << "| TICKET ID:         | " << ticketID << endl;
             cout << "| NAME:              | " << name << endl;
             cout << "| GENDER:            | " << gender << endl;
-            cout << "| DEPARTURE Station_BUS: | " << departureStation << endl;
-            cout << "| ARRIVAL Station_BUS:   | " << arrivalStation << endl;
+            cout << "| DEPARTURE STATION: | " << departureStation << endl;
+            cout << "| ARRIVAL STATION:   | " << arrivalStation << endl;
             cout << "| DISTANCE:          | " << distance << " km\n";
             cout << "| PRICE:             | " << prices << " PKR\n";
             cout << "| BUS NUMBER:        | " << coach_number << endl;
             cout << "| SEAT NUMBER:       | " << seat_number << endl;
             cout << "| DISTANCE:          | " << distance << " PKR\n";
             cout << "========================================\n";
+            return;
         }
         else if (reservation_option == 2)
         {
@@ -1471,53 +1472,54 @@ public:
     }
 };
 
-
 //===========================================================================================================================================================================
-//                                                          END OF BUS SYSTEM
+//                                                                                END OF BUS SYSTEM
 //===========================================================================================================================================================================
-
-
-
-
-
-
-
-
 
 //============================================================CONCERT RESERVATION SYSTEM================================================================================
-
-
+//---------------------------
+// Concert Reservation System
+//---------------------------
 struct Concert_Seats
 {
     string seat_no; // Seat number
     bool isBooked;  // Seat booked status
 };
+
+//---------------------------
+// Struct to represent a hall
+//---------------------------
+
 struct Concert_Hall
 {
     string name;
     string location;
     Concert_Seats Concert_seats[50];
-    Concert_Hall *next;
     bool isBooked;
+    double price;
 };
-struct Concert_Event
-{
-    Concert_Hall hall[5];
-    bool isBooked;
-};
+
+//------------------------------------------
+// Struct to represent a Concert_reservation
+//------------------------------------------
+
 struct Concert_Reservation
 {
     string name;
     string gender;
-    string Concert_ticketID;
+    int age; // Added age field
+    string ticketID;
     string time;
-    string Singer_name;
+    string singer_name;
     string type;
     string date;
     double price;
     string location;
-    Concert_Event OCUPATION;
+    string hallName;   // Concert_Hall name where the Concert_reservation is made
+    string seatNumber; // Seat number reserved
 };
+
+// Struct to represent a concert
 struct Concert
 {
     bool isBooked;
@@ -1525,296 +1527,50 @@ struct Concert
     string type;
     string date;
     string time;
-    string no_of_halls;
     string venue;
     double price;
-    Concert *next;
-    Concert_Reservation *Concert_reservation;
+    list<Concert_Reservation> reservations; // List of reservations for this concert
+    vector<Concert_Hall> halls;             // Halls associated with this concert
+
+    // Constructor to initialize halls
+    Concert()
+    {
+        halls.resize(5);
+        halls[0] = {"Platinum Concert_Hall", venue, {}, false, 500}; // Platinum Concert_Hall
+        halls[1] = {"Gold Concert_Hall", venue, {}, false, 400};     // Gold Concert_Hall
+        halls[2] = {"Silver Concert_Hall", venue, {}, false, 300};   // Silver Concert_Hall
+        halls[3] = {"Bronze Concert_Hall", venue, {}, false, 200};   // Bronze Concert_Hall
+        halls[4] = {"VIP Concert_Hall", venue, {}, false, 600};      // VIP Concert_Hall
+    }
 };
 
-struct Concert_AVLNode
-{
-    Concert_Reservation *Concert_reservation; // Pointer to the Concert_reservation
-    Concert_AVLNode *left;            // Left child
-    Concert_AVLNode *right;           // Right child
-    int height;               // Height of the node
-};
-
-// Function to get the height of the tree
-int height(Concert_AVLNode *node)
-{
-    if (node == nullptr)
-        return 0;
-    return node->height;
-}
-
-// Function to get the balance factor of the node
-int getBalance(Concert_AVLNode *node)
-{
-    if (node == nullptr)
-        return 0;
-    return height(node->left) - height(node->right);
-}
-
-// Right rotate
-Concert_AVLNode *rightRotate(Concert_AVLNode *y)
-{
-    Concert_AVLNode *x = y->left;
-    Concert_AVLNode *T2 = x->right;
-
-    // Perform rotation
-    x->right = y;
-    y->left = T2;
-
-    // Update heights
-    y->height = max(height(y->left), height(y->right)) + 1;
-    x->height = max(height(x->left), height(x->right)) + 1;
-
-    // Return new root
-    return x;
-}
-
-// Left rotate
-Concert_AVLNode *leftRotate(Concert_AVLNode *x)
-{
-    Concert_AVLNode *y = x->right;
-    Concert_AVLNode *T2 = y->left;
-
-    // Perform rotation
-    y->left = x;
-    x->right = T2;
-
-    // Update heights
-    x->height = max(height(x->left), height(x->right)) + 1;
-    y->height = max(height(y->left), height(y->right)) + 1;
-
-    // Return new root
-    return y;
-}
-// Structure for tree node (Concert_Seats and Cabins)
-
-// Class for Train Ticket Concert_Reservation System
-class CONCERT
+class ConcertGraph
 {
 private:
-    Concert *stationHead;                                // Linked list for stations
-    Concert_AVLNode *Concert_reservationRoot;                            // Binary Search Tree for Concert_reservations
-    unordered_map<string, Concert_Reservation *> Concert_reservationMap; // Map for quick ticket lookup
-    string generateUniqueID()
-    {
-        srand(time(0));
-        return "TICKET-" + to_string(rand() % 10000 + 1);
-    }
-    Concert_AVLNode *insertConcert_Reservation(Concert_AVLNode *node, Concert_Reservation *Concert_reservation)
-    {
-        // Normal BST insert
-        if (node == nullptr)
-        {
-            Concert_AVLNode *newNode = new Concert_AVLNode();
-            newNode->Concert_reservation = Concert_reservation;
-            newNode->left = nullptr;
-            newNode->right = nullptr;
-            newNode->height = 1; // New node is initially added at leaf
-            return newNode;
-        }
-
-        if (Concert_reservation->Concert_ticketID < node->Concert_reservation->Concert_ticketID)
-            node->left = insertConcert_Reservation(node->left, Concert_reservation);
-        else if (Concert_reservation->Concert_ticketID > node->Concert_reservation->Concert_ticketID)
-            node->right = insertConcert_Reservation(node->right, Concert_reservation);
-        else // Duplicate ticket IDs are not allowed
-            return node;
-
-        // Update the height of this ancestor node
-        node->height = 1 + max(height(node->left), height(node->right));
-
-        // Get the balance factor of this ancestor node to check whether
-        // this node became unbalanced
-        int balance = getBalance(node);
-
-        // If this node becomes unbalanced, then there are 4 cases
-
-        // Left Left Case
-        if (balance > 1 && Concert_reservation->Concert_ticketID < node->left->Concert_reservation->Concert_ticketID)
-            return rightRotate(node);
-
-        // Right Right Case
-        if (balance < -1 && Concert_reservation->Concert_ticketID > node->right->Concert_reservation->Concert_ticketID)
-            return leftRotate(node);
-
-        // Left Right Case
-        if (balance > 1 && Concert_reservation->Concert_ticketID > node->left->Concert_reservation->Concert_ticketID)
-        {
-            node->left = leftRotate(node->left);
-            return rightRotate(node);
-        }
-
-        // Right Left Case
-        if (balance < -1 && Concert_reservation->Concert_ticketID < node->right->Concert_reservation->Concert_ticketID)
-        {
-            node->right = rightRotate(node->right);
-            return leftRotate(node);
-        }
-
-        // Return the (unchanged) node pointer
-        return node;
-    }
-    // Insert Concert_reservation into BST
-    Concert_AVLNode *deleteConcert_Reservation(Concert_AVLNode *root, string Concert_ticketID)
-    {
-        if (root == nullptr)
-            return root;
-
-        // Perform standard BST delete
-        if (Concert_ticketID < root->Concert_reservation->Concert_ticketID)
-            root->left = deleteConcert_Reservation(root->left, Concert_ticketID);
-        else if (Concert_ticketID > root->Concert_reservation->Concert_ticketID)
-            root->right = deleteConcert_Reservation(root->right, Concert_ticketID);
-        else
-        {
-            // Node with only one child or no child
-            if ((root->left == nullptr) || (root->right == nullptr))
-            {
-                Concert_AVLNode *temp = root->left ? root->left : root->right;
-
-                // No child case
-                if (temp == nullptr)
-                {
-                    temp = root;
-                    root = nullptr;
-                }
-                else               // One child case
-                    *root = *temp; // Copy the contents of the non-empty child
-
-                delete temp;
-            }
-            else
-            {
-                // Node with two children: Get the inorder successor (smallest in the right subtree)
-                Concert_AVLNode *temp = root->right;
-                while (temp->left != nullptr)
-                    temp = temp->left;
-
-                // Copy the inorder successor's data to this node
-                root->Concert_reservation = temp->Concert_reservation;
-
-                // Delete the inorder successor
-                root->right = deleteConcert_Reservation(root->right, temp->Concert_reservation->Concert_ticketID);
-            }
-        }
-
-        // If the tree had only one node then return
-        if (root == nullptr)
-            return root;
-
-        // Update the height of the current node
-        root->height = 1 + max(height(root->left), height(root->right));
-
-        // Get the balance factor of this node to check whether
-        // this node became unbalanced
-        int balance = getBalance(root);
-
-        // If this node becomes unbalanced, then there are 4 cases
-
-        // Left Left Case
-        if (balance > 1 && getBalance(root->left) >= 0)
-            return rightRotate(root);
-
-        // Left Right Case
-        if (balance > 1 && getBalance(root->left) < 0)
-        {
-            root->left = leftRotate(root->left);
-            return rightRotate(root);
-        }
-
-        // Right Right Case
-        if (balance < -1 && getBalance(root->right) <= 0)
-            return leftRotate(root);
-
-        // Right Left Case
-        if (balance < -1 && getBalance(root->right) > 0)
-        {
-            root->right = rightRotate(root->right);
-            return leftRotate(root);
-        }
-
-        return root;
-    }
-
-    // In-order traversal to display Concert_reservations
-    void displayConcert_ReservationsInOrder(Concert_AVLNode *root)
-    {
-        if (!root)
-            return;
-
-        displayConcert_ReservationsInOrder(root->left);
-
-        if (root->Concert_reservation->OCUPATION.isBooked == true)
-        {
-            cout << "========================================\n";
-            cout << "            EVENT RESERVATION           \n";
-            cout << "========================================\n";
-            cout << "| TICKET ID:            | " << root->Concert_reservation->Concert_ticketID << endl;
-            cout << "| NAME:                 | " << root->Concert_reservation->name << endl;
-            cout << "| GENDER:               | " << root->Concert_reservation->gender << endl;
-            cout << "| TYPE:                 | " << root->Concert_reservation->type << endl;
-            cout << "| SINGER:               | " << root->Concert_reservation->Singer_name << endl;
-            cout << "| LOCATION:             | " << root->Concert_reservation->location << endl;
-            cout << "| DATE:                 | " << root->Concert_reservation->date << endl;
-            cout << "| TIME:                 | " << root->Concert_reservation->time << endl;
-            cout << "| PRICE:                | " << (root->Concert_reservation->price) * 250 << endl;
-            cout << "========================================\n";
-        }
-        else if (root->Concert_reservation->OCUPATION.isBooked == false)
-        {
-            for (int j = 0; j < 5; j++)
-            {
-                if (root->Concert_reservation->OCUPATION.hall[j].isBooked == true)
-                {
-                    cout << "========================================\n";
-                    cout << "            HALL RESERVATION           \n";
-                    cout << "========================================\n";
-                    cout << "| TICKET ID:            | " << root->Concert_reservation->Concert_ticketID << endl;
-                    cout << "| NAME:                 | " << root->Concert_reservation->name << endl;
-                    cout << "| GENDER:               | " << root->Concert_reservation->gender << endl;
-                    cout << "| EVENT TYPE:           | " << root->Concert_reservation->type << endl;
-                    cout << "| SINGER NAME:          | " << root->Concert_reservation->Singer_name << endl;
-                    cout << "| LOCATION:             | " << root->Concert_reservation->location << endl;
-                    cout << "| HALL NAME:            | " << root->Concert_reservation->OCUPATION.hall->name << endl;
-                    cout << "| HALL LOCATION:        | " << root->Concert_reservation->OCUPATION.hall->location << endl;
-                    cout << "| DATE :                | " << root->Concert_reservation->date << endl;
-                    cout << "| TIME :                | " << root->Concert_reservation->time << endl;
-                    cout << "| SEAT NUMBER:          | " << j + 1 << endl;
-                    cout << "| PRICE:                | " << (root->Concert_reservation->price) * 250 << " PKR\n";
-                    cout << "========================================\n";
-                }
-            }
-        }
-        displayConcert_ReservationsInOrder(root->right);
-    }
+    unordered_map<string, Concert> concerts; // Map of concert name to Concert object
 
 public:
-    CONCERT() : stationHead(nullptr), Concert_reservationRoot(nullptr) {}
+    // Constructor
+    ConcertGraph() {}
 
-    //===========================================================================Admin functions================================================================================================
-    void addConcert(bool booked, const string &name, const string &type, const string &date, const string &time, const string &venue, string no_of_halls, double price)
+    // Add a concert to the graph
+    void addConcert(const string &name, const string &type, const string &date, const string &time, const string &venue, double price)
     {
-        Concert *newConcert = new Concert{booked, name, type, date, time, venue, no_of_halls, price};
-        if (!stationHead)
-        {
-            stationHead = newConcert;
-            return;
-        }
-        Concert *temp = stationHead;
-        while (temp->next)
-            temp = temp->next;
-        temp->next = newConcert;
+        Concert newConcert;
+        newConcert.isBooked = false;
+        newConcert.name = name;
+        newConcert.type = type;
+        newConcert.date = date;
+        newConcert.time = time;
+        newConcert.venue = venue;
+        newConcert.price = price;
+        concerts[name] = newConcert; // Add to the graph
     }
-    // Admin: Display all stations
+
+    // Display all concerts
     void displayConcerts()
     {
-        Concert *temp = stationHead;
-        if (!temp)
+        if (concerts.empty())
         {
             cout << "No Concerts available.\n";
             return;
@@ -1822,379 +1578,1533 @@ public:
         cout << "========================================\n";
         cout << "          AVAILABLE CONCERTS:\n";
         cout << "========================================\n";
-        while (temp)
+        for (const auto &pair : concerts)
         {
-            cout << "NAME  :" << temp->name << "\n";
-            cout << "TYPE  :" << temp->type << "\n";
-            cout << "DATE  :" << temp->date << "\n";
-            cout << "TIME  :" << temp->time << "\n";
-            cout << "VENUE :" << temp->venue << "\n";
-            cout << "PRICE :" << temp->price << "\n";
-            temp = temp->next;
+            const Concert &concert = pair.second;
+            cout << "NAME  :" << concert.name << "\n";
+            cout << "TYPE  :" << concert.type << "\n";
+            cout << "DATE  :" << concert.date << "\n";
+            cout << "TIME  :" << concert.time << "\n";
+            cout << "VENUE :" << concert.venue << "\n";
+            cout << "PRICE :" << concert.price << "\n";
         }
         cout << "========================================\n";
     }
 
-    // Admin: Edit a station
-    void editConcert()
+    // Reserve a ticket for a concert
+    void reserveTicket(const string &concertName, const string &name, const string &gender, int age)
     {
-        displayConcerts(); // Display all concerts to the user
-        string concertName;
-        cout << "Enter the name of the concert to edit: ";
-        cin >> concertName;
-
-        Concert *temp = stationHead;
-        while (temp && temp->name != concertName)
-            temp = temp->next;
-
-        if (!temp)
+        if (concerts.find(concertName) == concerts.end())
         {
             cout << "Concert not found.\n";
             return;
         }
 
+        Concert &concert = concerts[concertName];
+
+        // Check if any seat or hall is already booked
+        if (concert.isBooked || std::any_of(concert.halls.begin(), concert.halls.end(), [](const Concert_Hall &hall)
+                                            { return hall.isBooked; }))
+        {
+            cout << "There is already a booking for this event.\n";
+            return;
+        }
+
         int choice;
-        do
-        {
-            cout << "\nEditing concert: " << temp->name << endl;
-            cout << "Select the property to edit:\n";
-            cout << "1. Concert Name\n";
-            cout << "2. Date\n";
-            cout << "3. Time\n";
-            cout << "4. Venue\n";
-            cout << "5. Number of Concert_Halls\n";
-            cout << "6. Price\n";
-            cout << "7. Exit\n";
-            cout << "Enter your choice: ";
-            cin >> choice;
-
-            switch (choice)
-            {
-            case 1:
-            {
-                string newName;
-                cout << "Enter new concert name: ";
-                cin >> newName;
-                temp->name = newName;
-                cout << "Concert name updated successfully.\n";
-                break;
-            }
-            case 2:
-            {
-                string newDate;
-                cout << "Enter new date (YYYY-MM-DD): ";
-                cin >> newDate;
-                temp->date = newDate;
-                cout << "Concert date updated successfully.\n";
-                break;
-            }
-            case 3:
-            {
-                string newTime;
-                cout << "Enter new time (HH:MM): ";
-                cin >> newTime;
-                temp->time = newTime;
-                cout << "Concert time updated successfully.\n";
-                break;
-            }
-            case 4:
-            {
-                string newVenue;
-                cout << "Enter new venue: ";
-                cin >> newVenue;
-                temp->venue = newVenue;
-                cout << "Concert venue updated successfully.\n";
-                break;
-            }
-            case 5:
-            {
-                string newNoOfConcert_Halls;
-                cout << "Enter new number of halls: ";
-                cin >> newNoOfConcert_Halls;
-                temp->no_of_halls = newNoOfConcert_Halls;
-                cout << "Number of halls updated successfully.\n";
-                break;
-            }
-            case 6:
-            {
-                double newPrice;
-                cout << "Enter new price: ";
-                cin >> newPrice;
-                temp->price = newPrice;
-                cout << "Concert price updated successfully.\n";
-                break;
-            }
-            case 7:
-            {
-                cout << "Exiting edit menu.\n";
-                break;
-            }
-            default:
-                cout << "Invalid choice. Please try again.\n";
-            }
-        } while (choice != 7);
-    }
-    void bubbleSort()
-    {
-        if (!stationHead)
-            return; // If the list is empty, do nothing
-
-        bool swapped;
-        do
-        {
-            swapped = false;
-            Concert *current = stationHead;
-
-            while (current->next != nullptr)
-            {
-                // Compare based on concert name (you can change this to date or time as needed)
-                if (current->name > current->next->name)
-                {
-                    // Swap the concerts
-                    swap(current->name, current->next->name);
-                    swap(current->date, current->next->date);
-                    swap(current->time, current->next->time);
-                    swap(current->venue, current->next->venue);
-                    swap(current->no_of_halls, current->next->no_of_halls);
-                    swap(current->price, current->next->price);
-                    swapped = true;
-                }
-                current = current->next;
-            }
-        } while (swapped);
-    }
-    // Function to delete a specific station from the linked list
-    void deleteConcert(const string &concertName)
-    {
-        Concert *temp = stationHead; // Start from the head of the concert list
-        Concert *prev = nullptr;     // To keep track of the previous node
-
-        // Traverse the list to find the concert
-        while (temp != nullptr && temp->name != concertName)
-        {
-            prev = temp;       // Move prev to current
-            temp = temp->next; // Move to the next concert
-        }
-
-        // If the concert was not found
-        if (temp == nullptr)
-        {
-            cout << "Concert not found.\n";
-            return;
-        }
-
-        // If the concert is the head of the list
-        if (prev == nullptr)
-        {
-            stationHead = temp->next; // Change head to the next concert
-        }
-        else
-        {
-            prev->next = temp->next; // Unlink the concert from the list
-        }
-
-        delete temp; // Free memory
-        cout << "Concert '" << concertName << "' deleted successfully.\n";
-    }
-
-    //================================================================================================================================================================================================================================
-    void reserveTicket()
-    {
-        displayConcerts();
-        int choice;
-        string concert_name;
-        Concert *temp = stationHead;
-        cout << "Enter the name of the concert: ";
-        cin.ignore();
-        getline(cin, concert_name);
-
-        // Find the concert
-        while (temp && temp->name != concert_name)
-        {
-            temp = temp->next;
-        }
-
-        if (!temp)
-        {
-            cout << "CONCERT NOT FOUND [please try again]\n";
-            return;
-        }
-
-        if (temp->isBooked)
-        {
-            cout << "CONCERT IS FULLY BOOKED\n";
-            return;
-        }
-        else
-        {
-            cout << "========================================\n";
-            cout << "           CONCERT DETAILS" << endl;
-            cout << "========================================\n";
-            cout << "NAME  :" << temp->name << "\n";
-            cout << "TYPE  :" << temp->type << "\n";
-            cout << "DATE  :" << temp->date << "\n";
-            cout << "TIME  :" << temp->time << "\n";
-            cout << "VENUE :" << temp->venue << "\n";
-            cout << "PRICE :" << temp->price << "\n";
-            cout << "========================================\n";
-        }
-
-        int choice2;
         cout << "========================================\n";
-        cout << "          ENTER YOUR CHOICE :\n";
+        cout << "Choose booking type:\n";
         cout << "========================================\n";
-        cout << "1. BOOK A SEAT\n";
-        cout << "2. BOOK A HALL\n";
-        cout << "3. BOOK AN EVENT\n";
+        cout << "1. Book Entire Event\n";
+        cout << "2. Book a Concert_Hall\n";
+        cout << "3. Book a Seat\n";
+        cout << "========================================\n";
         cout << "Enter your choice: ";
+        cin >> choice;
 
-        // Validate input for choice2
-        while (!(cin >> choice2) || choice2 < 1 || choice2 > 3)
+        switch (choice)
         {
-            cout << "INVALID CHOICE. Please enter 1, 2, or 3: ";
-            cin.clear();                                         // Clear the error flag
-            cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Discard invalid input
-        }
-
-        int hall_no;
-        int seat_no;
-
-        switch (choice2)
-        {
-        case 1: // Book a seat
-            if (temp->isBooked)
-            {
-                cout << "SORRY, THE CONCERT IS FULLY BOOKED\n";
-                return;
-            }
-            cout << "AVAILABLE HALLS\n";
+        case 1: // Book entire event'
             for (int i = 0; i < 5; i++)
             {
-                if (!temp->Concert_reservation->OCUPATION.hall[i].isBooked)
+                for (int j = 0; j < 50; j++)
                 {
-                    cout << "HALL NUMBER :" << i + 1 << endl;
+                    if (concert.halls[i].Concert_seats[j].isBooked)
+                    {
+                        cout << " A Seat is already booked here\n";
+                        return;
+                    }
                 }
             }
-            cout << "ENTER THE HALL NUMBER: ";
-            cin >> hall_no;
-            if (hall_no < 1 || hall_no > 5 || temp->Concert_reservation->OCUPATION.hall[hall_no - 1].isBooked)
+            concert.isBooked = true;
             {
-                cout << "INVALID HALL NUMBER [please enter a number from the above given list]\n";
+                string ticketID = to_string(rand() % 10000); // Generate a random ticket ID
+                cout << "Event booked successfully for " << concertName << ".\n";
+                cout << "========================================\n";
+                cout << "           RESERVATION DETAILS\n";
+                cout << "========================================\n";
+                cout << "| NAME:           | " << name << endl;
+                cout << "| TICKET ID:      | " << ticketID << endl;
+                cout << "| GENDER:         | " << gender << endl;
+                cout << "| AGE:            | " << age << endl;
+                cout << "| CONCERT NAME:   | " << concertName << endl;
+                cout << "| CONCERT VENUE:  | " << concert.venue << endl;
+                cout << "| CONCERT DATE:   | " << concert.date << endl;
+                cout << "| CONCERT TIME:   | " << concert.time << endl;
+                cout << "| TICKET PRICE:   | " << (concert.price) * 200 << endl;
+                cout << "========================================\n";
+            }
+            break;
+
+        case 2:
+        { // Book a hall
+            // Check if the event is already booked
+            if (concert.isBooked)
+            {
+                cout << "There is already a booking for this event.\n";
+                return;
+            }
+
+            cout << "Available Halls:\n";
+            for (size_t i = 0; i < concert.halls.size(); ++i)
+            {
+                cout << i + 1 << ". " << concert.halls[i].name << " - Price: " << concert.halls[i].price << "\n";
+            }
+            int hallChoice;
+            cout << "Select a hall to book: ";
+            cin >> hallChoice;
+
+            if (hallChoice < 1 || hallChoice > concert.halls.size() || concert.halls[hallChoice - 1].isBooked)
+            {
+                cout << "Invalid choice or hall already booked.\n";
+                return;
+            }
+
+            Concert_Reservation Concert_reservation;
+            Concert_reservation.name = name;
+            Concert_reservation.gender = gender;
+            Concert_reservation.age = age;
+            Concert_reservation.ticketID = to_string(rand() % 10000);          // Generate a random ticket ID
+            Concert_reservation.hallName = concert.halls[hallChoice - 1].name; // Set hall name
+            concert.reservations.push_back(Concert_reservation);               // Add Concert_reservation to concert
+
+            concert.halls[hallChoice - 1].isBooked = true;
+            cout << "Concert_Hall " << concert.halls[hallChoice - 1].name << " booked successfully.\n";
+            cout << "========================================\n";
+            cout << "           RESERVATION DETAILS\n";
+            cout << "========================================\n";
+            cout << "| NAME:           | " << name << endl;
+            cout << "| TICKET ID:      | " << Concert_reservation.ticketID << endl;
+            cout << "| GENDER:         | " << gender << endl;
+            cout << "| AGE:            | " << age << endl;
+            cout << "| HALL NAME:      | " << Concert_reservation.hallName << endl;
+            cout << "| CONCERT DATE:   | " << concert.date << endl;
+            cout << "| CONCERT VENUE: | " << concert.venue << endl;
+            cout << "| CONCERT TIME:   | " << concert.time << endl;
+            cout << "========================================\n";
+            break;
+        }
+
+        case 3:
+        { // Book a seat
+            // Check if the event is already booked
+            if (concert.isBooked)
+            {
+                cout << "There is already a booking for this event.\n";
+                return;
+            }
+
+            cout << "Available Halls:\n";
+            for (size_t i = 0; i < concert.halls.size(); ++i)
+            {
+                cout << i + 1 << ". " << concert.halls[i].name << " - Price: " << concert.halls[i].price << "\n";
+            }
+            int hallChoice;
+            cout << "Select a hall to book a seat: ";
+            cin >> hallChoice;
+
+            if (hallChoice < 1 || hallChoice > concert.halls.size() || concert.halls[hallChoice - 1].isBooked)
+            {
+                cout << "Invalid choice or hall already booked.\n";
+                return;
+            }
+
+            Concert_Hall &selectedHall = concert.halls[hallChoice - 1];
+            cout << "========================================\n";
+            cout << "Available Concert_Seats in " << selectedHall.name << ":\n";
+            cout << "========================================\n";
+
+            // Display available Concert_seats
+            for (int i = 0; i < 50; i++)
+            {
+                selectedHall.Concert_seats[i].seat_no = to_string(i + 1); // Assign seat numbers
+            }
+            for (int i = 0; i < 50; ++i)
+            {
+                if (!selectedHall.Concert_seats[i].isBooked)
+                {
+                    cout << selectedHall.Concert_seats[i].seat_no << " | "; // Print available seat numbers
+                }
+                if (i == 10 || i == 20 || i == 30 || i == 40)
+                {
+                    cout << "\n"; // New line for better readability
+                }
+            }
+            cout << "\n"; // New line for better readability
+
+            cout << "Enter seat number to book: ";
+            string seatNumber;
+            cin >> seatNumber;
+
+            // Check if the seat number is valid
+            bool seatFound = false;
+            for (int i = 0; i < 50; ++i)
+            {
+                if (selectedHall.Concert_seats[i].seat_no == seatNumber)
+                {
+                    if (!selectedHall.Concert_seats[i].isBooked)
+                    {
+                        selectedHall.Concert_seats[i].isBooked = true;
+                        cout << "Seat " << seatNumber << " booked successfully in " << selectedHall.name << ".\n";
+                        seatFound = true;
+
+                        // Create a Concert_reservation entry
+                        Concert_Reservation Concert_reservation;
+                        Concert_reservation.name = name;
+                        Concert_reservation.gender = gender;
+                        Concert_reservation.age = age;
+                        Concert_reservation.ticketID = to_string(rand() % 10000); // Generate a random ticket ID
+                        Concert_reservation.hallName = selectedHall.name;         // Set hall name
+                        Concert_reservation.seatNumber = seatNumber;              // Set seat number
+                        concert.reservations.push_back(Concert_reservation);      // Add Concert_reservation to concert
+
+                        cout << "========================================\n";
+                        cout << "           RESERVATION DETAILS\n";
+                        cout << "========================================\n";
+                        cout << "| NAME:           | " << name << endl;
+                        cout << "| TICKET ID:      | " << Concert_reservation.ticketID << endl;
+                        cout << "| GENDER:         | " << gender << endl;
+                        cout << "| AGE:            | " << age << endl;
+                        cout << "| HALL NAME:      | " << Concert_reservation.hallName << endl;
+                        cout << "| SEAT NUMBER:    | " << Concert_reservation.seatNumber << endl;
+                        cout << "| CONCERT DATE:   | " << concert.date << endl;
+                        cout << "| CONCERT VENUE:  | " << concert.venue << endl;
+                        cout << "| CONCERT TIME:   | " << concert.time << endl;
+                        cout << "========================================\n";
+                        break;
+                    }
+                    else
+                    {
+                        cout << "Seat " << seatNumber << " is already booked.\n";
+                        return;
+                    }
+                }
+            }
+            if (!seatFound)
+            {
+                cout << "Invalid seat number.\n";
+            }
+            break;
+        }
+
+        default:
+            cout << "Invalid choice. Please try again.\n";
+            break;
+        }
+    }
+    // Display reservations for a concert
+    // Display reservations for a concert
+    void displayReservations(const string &ticketID = "")
+    {
+        if (ticketID.empty())
+        {
+            cout << "No ticket ID provided.\n";
+            return;
+        }
+
+        bool found = false; // Flag to check if the Concert_reservation is found
+
+        // Iterate through all concerts to find the Concert_reservation by ticket ID
+        for (const auto &concertPair : concerts)
+        {
+            const Concert &concert = concertPair.second;
+
+            for (const auto &Concert_reservation : concert.reservations)
+            {
+                if (Concert_reservation.ticketID == ticketID)
+                {
+                    // Print ticket-like format
+                    cout << "========================================\n";
+                    cout << "               TICKET\n";
+                    cout << "========================================\n";
+                    cout << "| TICKET ID:      | " << Concert_reservation.ticketID << "\n";
+                    cout << "| NAME:           | " << Concert_reservation.name << "\n";
+                    cout << "| GENDER:         | " << Concert_reservation.gender << "\n";
+                    cout << "| AGE:            | " << Concert_reservation.age << "\n";
+                    cout << "| CONCERT:        | " << concertPair.first << "\n";
+                    cout << "| CONCERT THEME:  | " << concert.type << "\n";
+                    cout << "| VENUE:          | " << concert.venue << "\n"; // Assuming venue is a field in Concert
+                    cout << "| HALL:           | " << Concert_reservation.hallName << "\n";
+                    cout << "| SEAT:           | " << Concert_reservation.seatNumber << "\n";
+                    cout << "| DATE:           | " << concert.date << "\n"; // Date and time of the Concert_reservation
+                    cout << "| TIME:           | " << concert.time << "\n"; // Date and time of the Concert_reservation
+                    cout << "========================================\n";
+                    found = true; // Set the flag to true
+                    break;        // Exit the inner loop
+                }
+            }
+            if (found)
+                break; // Exit the outer loop if found
+        }
+
+        if (!found)
+        {
+            cout << "No Concert_reservation found for ticket ID " << ticketID << ".\n";
+        }
+    }
+
+    // Delete a Concert_reservation by ticket ID
+    void deleteReservation(const string &concertName, const string &ticketID)
+    {
+        if (concerts.find(concertName) == concerts.end())
+        {
+            cout << "Concert not found.\n";
+            return;
+        }
+
+        Concert &concert = concerts[concertName];
+        auto it = concert.reservations.begin();
+        while (it != concert.reservations.end())
+        {
+            if (it->ticketID == ticketID)
+            {
+                it = concert.reservations.erase(it); // Remove Concert_reservation
+                cout << "Concert_Reservation with ticket ID " << ticketID << " deleted successfully.\n";
                 return;
             }
             else
             {
-                cout << "AVAILABLE SEATS\n";
-                for (int i = 0; i < 50; i++)
+                ++it;
+            }
+        }
+        cout << "Ticket ID not found in reservations.\n";
+    }
+};
+
+//===========================================================================================================================================================================
+//                                                                        END OF CONCERT SYSTEM
+//===========================================================================================================================================================================
+
+//=======================================================================STADIUM RESERVATION SYSTEM================================================================================
+
+//--------------------------
+// Struct to represent seats
+//--------------------------
+struct Stadium_Seats
+{
+    string seat_no; // Seat number
+    bool isBooked;  // Seat booked status
+};
+
+//--------------------------
+// Struct to represent a section
+//--------------------------
+
+struct Stadium_section
+{
+    string name;
+    string location;
+    Stadium_Seats seats[250];
+    bool isBooked;
+    double price; // Price for booking this section
+};
+
+//----------------------------------
+// Struct to represent a reservation
+//----------------------------------
+
+struct Stadium_Reservation
+{
+    string name;
+    string gender;
+    int age; // Added age field
+    string ticketID;
+    string time;
+    string singer_name;
+    string type;
+    string date;
+    string location;
+    string section_Name; // Stadium_section name where the reservation is made
+    string seatNumber;   // Seat number reserved
+};
+
+//--------------------------------
+// Struct to represent a stadium
+//--------------------------------
+
+struct Stadium
+{
+    string Team1;
+    string Team2;
+    bool isBooked;
+    string name;
+    string type;
+    string date;
+    string time;
+    string venue;
+    double price;
+    list<Stadium_Reservation> reservations; // List of reservations for this stadium
+    vector<Stadium_section> sections;       // Halls associated with this stadium
+
+    // Constructor to initialize sections
+    Stadium()
+    {
+        sections.resize(5);
+        sections[0] = {"BRONZE SECTION", venue, {}, false, 500};    // Platinum Stadium_section
+        sections[1] = {"SILVER SECTION", venue, {}, false, 800};    // Gold Stadium_section
+        sections[2] = {"GOLD SECTION", venue, {}, false, 1000};     // Silver Stadium_section
+        sections[3] = {"PLATINUM SECTION", venue, {}, false, 2000}; // Bronze Stadium_section
+        sections[4] = {"VIP SECTION", venue, {}, false, 2500};      // VIP Stadium_section
+    }
+};
+
+//===========================================================================================================================================================================
+//                                                          CLASS OF STADIUM SYSTEM
+//===========================================================================================================================================================================
+class StadiumGraph
+{
+private:
+    unordered_map<string, Stadium> stadiums; // Map of stadium name to Stadium object
+
+public:
+    // Constructor
+    StadiumGraph() {}
+
+    // Add a stadium to the graph
+    void addMatch(const string &Team1, const string &Team2, const string &name, const string &type, const string &date, const string &time, const string &venue)
+    {
+        // Check if a match with the same name already exists
+        if (stadiums.find(name) != stadiums.end() && stadiums.find(time) != stadiums.end())
+        {
+            cout << "A MATCH AT '" << name << " ALREADY EXISTS AT THIUS TIME.\n";
+            return; // Exit the function to prevent duplicate entries
+        }
+
+        // Create a new Stadium object
+        Stadium newStadium;
+        newStadium.isBooked = false; // Initialize booking status
+        newStadium.Team1 = Team1;    // Set Team 1
+        newStadium.Team2 = Team2;    // Set Team 2
+        newStadium.name = name;      // Set match name
+        newStadium.type = type;      // Set match type
+        newStadium.date = date;      // Set match date
+        newStadium.time = time;      // Set match time
+        newStadium.venue = venue;    // Set match venue
+
+        // Add the new stadium (match) to the graph
+        stadiums[name] = newStadium;
+    }
+
+    // Display all stadiums
+    void displayUpcomingMatches()
+    {
+        if (stadiums.empty())
+        {
+            cout << "No Concerts available.\n";
+            return;
+        }
+        cout << "========================================\n";
+        cout << "          UPCOMING MATCHES:\n";
+        cout << "========================================\n";
+        for (const auto &pair : stadiums)
+        {
+            const Stadium &stadium = pair.second;
+            cout << "========================================\n";
+            cout << "STADIUM               :" << stadium.name << "\n";
+            cout << "MATCH CATEGORY        :" << stadium.type << "\n";
+            cout << "TEAM 1                :" << stadium.Team1 << "\n";
+            cout << "TEAM 2                :" << stadium.Team2 << "\n";
+            cout << "DATE                  :" << stadium.date << "\n";
+            cout << "TIME                  :" << stadium.time << "\n";
+            cout << "CITY                  :" << stadium.venue << "\n";
+            cout << "========================================\n";
+        }
+    }
+    // Delete a match (stadium) from the graph
+    // Delete a match (stadium) from the graph based on stadium name and date
+    // Reserve a ticket for a stadium
+    void reserveTicket(const string &stadiumName, const string &name, const string &gender, int age)
+    {
+        if (stadiums.find(stadiumName) == stadiums.end())
+        {
+            cout << "Stadium not found.\n";
+            return;
+        }
+
+        Stadium &stadium = stadiums[stadiumName];
+
+        // Check if any seat or section is already booked
+        if (stadium.isBooked || std::any_of(stadium.sections.begin(), stadium.sections.end(), [](const Stadium_section &section)
+                                            { return section.isBooked; }))
+        {
+            cout << "There is already a booking for this event.\n";
+            return;
+        }
+
+        int choice;
+        cout << "========================================\n";
+        cout << "           Choose booking type:\n";
+        cout << "========================================\n";
+        cout << "1. Book Entire Event\n";
+        cout << "2. Book a Stadium_section\n";
+        cout << "3. Book a Seat\n";
+        cout << "========================================\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice)
+        {
+        case 1: // Book entire event'
+            for (int i = 0; i < 5; i++)
+            {
+                for (int j = 0; j < 50; j++)
                 {
-                    if (!temp->Concert_reservation->OCUPATION.hall[hall_no - 1].Concert_seats[i].isBooked)
+                    if (stadium.sections[i].seats[j].isBooked)
                     {
-                        cout << "SEAT NUMBER :" << i + 1 << endl;
+                        cout << " A Seat is already booked here\n";
+                        return;
                     }
                 }
-                cout << "ENTER THE SEAT NUMBER: ";
-                cin >> seat_no;
-                if (seat_no < 1 || seat_no > 50 || temp->Concert_reservation->OCUPATION.hall[hall_no - 1].Concert_seats[seat_no - 1].isBooked)
+            }
+            stadium.isBooked = true;
+            {
+                string ticketID = to_string(rand() % 10000); // Generate a random ticket ID
+                cout << "Event booked successfully for " << stadiumName << ".\n";
+                cout << "========================================\n";
+                cout << "           RESERVATION DETAILS\n";
+                cout << "========================================\n";
+                cout << "| STADIUM:        | " << name << endl;
+                cout << "| TICKET ID:      | " << ticketID << endl;
+                cout << "| GENDER:         | " << gender << endl;
+                cout << "| AGE:            | " << age << endl;
+                cout << "| CITY:           | " << stadium.venue << endl;
+                cout << "| MATCH DATE:     | " << stadium.date << endl;
+                cout << "| MATCH TIME:     | " << stadium.time << endl;
+                cout << "========================================\n";
+
+                // Create a reservation entry
+                Stadium_Reservation reservation;
+                reservation.name = name;
+                reservation.ticketID = ticketID;
+                reservation.gender = gender;
+                reservation.age = age;
+                reservation.time = stadium.time;
+                reservation.date = stadium.date;
+                reservation.location = stadium.venue;
+                stadium.reservations.push_back(reservation); // Add reservation to stadium
+            }
+            break;
+
+        case 2:
+        { // Book a section
+            // Check if the event is already booked
+            if (stadium.isBooked)
+            {
+                cout << "There is already a booking for this event.\n";
+                return;
+            }
+
+            cout << "Available Halls:\n";
+            for (size_t i = 0; i < stadium.sections.size(); ++i)
+            {
+                cout << i + 1 << ". " << stadium.sections[i].name << " - Price: " << stadium.sections[i].price << "\n";
+            }
+            int hallChoice;
+            cout << "Select a section to book: ";
+            cin >> hallChoice;
+
+            if (hallChoice < 1 || hallChoice > stadium.sections.size() || stadium.sections[hallChoice - 1].isBooked)
+            {
+                cout << "Invalid choice or section already booked.\n";
+                return;
+            }
+
+            Stadium_Reservation reservation;
+            reservation.name = name;
+            reservation.gender = gender;
+            reservation.age = age;
+            reservation.ticketID = to_string(rand() % 10000);                 // Generate a random ticket ID
+            reservation.section_Name = stadium.sections[hallChoice - 1].name; // Set section name
+            stadium.reservations.push_back(reservation);                      // Add reservation to stadium
+
+            stadium.sections[hallChoice - 1].isBooked = true;
+            cout << "Stadium_section " << stadium.sections[hallChoice - 1].name << " booked successfully.\n";
+            cout << "========================================\n";
+            cout << "           RESERVATION DETAILS\n";
+            cout << "========================================\n";
+            cout << "| STADIUM:        | " << name << endl;
+            cout << "| TICKET ID:      | " << reservation.ticketID << endl;
+            cout << "| GENDER:         | " << gender << endl;
+            cout << "| AGE:            | " << age << endl;
+            cout << "| SECTION NAME:   | " << reservation.section_Name << endl;
+            cout << "| MATCH DATE:     | " << stadium.date << endl;
+            cout << "| MATCH VENUE:    | " << stadium.venue << endl;
+            cout << "| MATCH TIME:     | " << stadium.time << endl;
+            cout << "========================================\n";
+            break;
+        }
+
+        case 3:
+        { // Book a seat
+            // Check if the event is already booked
+            if (stadium.isBooked)
+            {
+                cout << "There is already a booking for this event.\n";
+                return;
+            }
+
+            cout << "Available Halls:\n";
+            for (size_t i = 0; i < stadium.sections.size(); ++i)
+            {
+                cout << i + 1 << ". " << stadium.sections[i].name << " - Price: " << stadium.sections[i].price << "\n";
+            }
+            int hallChoice;
+            cout << "Select a section to book a seat: ";
+            cin >> hallChoice;
+
+            if (hallChoice < 1 || hallChoice > stadium.sections.size() || stadium.sections[hallChoice - 1].isBooked)
+            {
+                cout << "Invalid choice or section already booked.\n";
+                return;
+            }
+
+            Stadium_section &selectedSection = stadium.sections[hallChoice - 1];
+            cout << "========================================\n";
+            cout << "AVAILABLE SEATS IN  " << selectedSection.name << ":\n";
+            cout << "========================================\n";
+
+            // Display available seats
+            for (int i = 0; i < 50; i++)
+            {
+                selectedSection.seats[i].seat_no = to_string(i + 1); // Assign seat numbers
+            }
+            for (int i = 0; i < 50; ++i)
+            {
+                if (!selectedSection.seats[i].isBooked)
                 {
-                    cout << "INVALID SEAT NUMBER\n";
-                    return;
+                    cout << selectedSection.seats[i].seat_no << " | "; // Print available seat numbers
+                }
+                if (i == 10 || i == 20 || i == 30 || i == 40)
+                {
+                    cout << "\n"; // New line for better readability
+                }
+            }
+            cout << "\n"; // New line for better readability
+
+            cout << "ENTER SEAT NUMBER TO BOOK: ";
+            string seatNumber;
+            cin >> seatNumber;
+
+            // Check if the seat number is valid
+            bool seatFound = false;
+            for (int i = 0; i < 50; ++i)
+            {
+                if (selectedSection.seats[i].seat_no == seatNumber)
+                {
+                    if (!selectedSection.seats[i].isBooked)
+                    {
+                        selectedSection.seats[i].isBooked = true;
+                        cout << "Seat " << seatNumber << " booked successfully in " << selectedSection.name << ".\n";
+                        seatFound = true;
+
+                        // Create a reservation entry
+                        Stadium_Reservation reservation;
+                        reservation.name = name;
+                        reservation.gender = gender;
+                        reservation.age = age;
+                        reservation.ticketID = to_string(rand() % 10000); // Generate a random ticket ID
+                        reservation.section_Name = selectedSection.name;  // Set section name
+                        reservation.seatNumber = seatNumber;              // Set seat number
+                        stadium.reservations.push_back(reservation);      // Add reservation to stadium
+
+                        cout << "========================================\n";
+                        cout << "           RESERVATION DETAILS\n";
+                        cout << "========================================\n";
+                        cout << "| STADIUM:        | " << name << endl;
+                        cout << "| TICKET ID:      | " << reservation.ticketID << endl;
+                        cout << "| GENDER:         | " << gender << endl;
+                        cout << "| AGE:            | " << age << endl;
+                        cout << "| SECTION NAME:   | " << reservation.section_Name << endl;
+                        cout << "| SEAT NUMBER:    | " << reservation.seatNumber << endl;
+                        cout << "| MATCH DATE:     | " << stadium.date << endl;
+                        cout << "| MATCH VENUE:    | " << stadium.venue << endl;
+                        cout << "| MATCH TIME:     | " << stadium.time << endl;
+                        cout << "========================================\n";
+                        break;
+                    }
+                    else
+                    {
+                        cout << "Seat " << seatNumber << " is already booked.\n";
+                        return;
+                    }
+                }
+            }
+            if (!seatFound)
+            {
+                cout << "Invalid seat number.\n";
+            }
+            break;
+        }
+
+        default:
+            cout << "Invalid choice. Please try again.\n";
+            break;
+        }
+    }
+    // Display reservations for a stadium
+    // Display reservations for a stadium
+    void displayReservations(const string &ticketID = "")
+    {
+        if (ticketID.empty())
+        {
+            cout << "No ticket ID provided.\n";
+            return;
+        }
+
+        bool found = false; // Flag to check if the reservation is found
+
+        // Iterate through all stadiums to find the reservation by ticket ID
+        for (const auto &concertPair : stadiums)
+        {
+            const Stadium &stadium = concertPair.second;
+
+            for (const auto &reservation : stadium.reservations)
+            {
+                if (reservation.ticketID == ticketID)
+                {
+                    // Print ticket-like format
+                    cout << "========================================\n";
+                    cout << "               TICKET\n";
+                    cout << "========================================\n";
+                    cout << "| TICKET ID:      | " << reservation.ticketID << "\n";
+                    cout << "| STADIUM:        | " << reservation.name << "\n";
+                    cout << "| GENDER:         | " << reservation.gender << "\n";
+                    cout << "| AGE:            | " << reservation.age << "\n";
+                    cout << "| TEAM 1:         | " << stadium.Team1 << endl;
+                    cout << "| TEAM 2:         | " << stadium.Team2 << endl;
+                    cout << "| MATCH NAME:     | " << stadium.name << "\n";
+                    cout << "| MATCH THEME:    | " << stadium.type << "\n";
+                    cout << "| VENUE:          | " << stadium.venue << "\n"; // Assuming venue is a field in Stadium
+                    cout << "| SECTION:        | " << reservation.section_Name << "\n";
+                    cout << "| SEAT:           | " << reservation.seatNumber << "\n";
+                    cout << "| DATE:           | " << stadium.date << "\n"; // Date and time of the reservation
+                    cout << "| TIME:           | " << stadium.time << "\n"; // Date and time of the reservation
+                    cout << "========================================\n";
+                    found = true; // Set the flag to true
+                    break;        // Exit the inner loop
+                }
+            }
+            if (found)
+                break; // Exit the outer loop if found
+        }
+
+        if (!found)
+        {
+            cout << "No reservation found for ticket ID " << ticketID << ".\n";
+        }
+    }
+
+    // Delete a reservation by ticket ID
+    void deleteReservation(const string &stadiumName, const string &ticketID)
+    {
+        if (stadiums.find(stadiumName) == stadiums.end())
+        {
+            cout << "Stadium not found.\n";
+            return;
+        }
+
+        Stadium &stadium = stadiums[stadiumName];
+        auto it = stadium.reservations.begin();
+        while (it != stadium.reservations.end())
+        {
+            if (it->ticketID == ticketID)
+            {
+                it = stadium.reservations.erase(it); // Remove reservation
+                cout << "Stadium_Reservation with ticket ID " << ticketID << " deleted successfully.\n";
+                return;
+            }
+            else
+            {
+                ++it;
+            }
+        }
+        cout << "Ticket ID not found in reservations.\n";
+    }
+    // Delete a match using a unique identifier (stadium name and date)
+    // Delete a match using a unique identifier (stadium name and date)
+    void deleteMatch(const string &stadiumName)
+    {
+        // Iterate through the stadiums to find and delete the match
+        auto it = stadiums.find(stadiumName); // Find by stadium name
+        if (it != stadiums.end())
+        {
+            stadiums.erase(it); // Remove the stadium from the map
+            cout << "Match AT '" << stadiumName << "' deleted successfully.\n";
+        }
+        else
+        {
+            cout << "Stadium not found.\n";
+        }
+    }
+};
+
+//===========================================================================================================================================================================
+//                                                                        END OF STADIUM SYSTEM
+//===========================================================================================================================================================================
+
+//===========================================================================================================================================================================
+//                                                                        FILE HANDLING FUNCTIONS
+//===========================================================================================================================================================================
+
+//===============================
+// Function to authenticate admin
+//===============================
+
+bool authenticateAdmin(const string &userId, const string &password)
+{
+    ifstream file("admin_credientials.txt");
+    if (!file.is_open())
+    {
+        cout << "Error opening credentials file.\n";
+        return false;
+    }
+
+    string name, storedUserId, storedPassword;
+    while (file >> name >> storedUserId >> storedPassword)
+    {
+        if (storedUserId == userId && storedPassword == password)
+        {
+            return true; // Authentication successful
+        }
+    }
+
+    return false; // Authentication failed
+}
+bool authenticateCustomer(const string &userId, const string &password)
+{
+    ifstream file("customer_credentials.txt");
+    if (!file.is_open())
+    {
+        cout << "Error opening customer credentials file.\n";
+        return false;
+    }
+
+    string name, storedUserId, storedPassword;
+    while (file >> name >> storedUserId >> storedPassword)
+    {
+        if (storedUserId == userId && storedPassword == password)
+        {
+            return true; // Authentication successful
+        }
+    }
+
+    return false; // Authentication failed
+}
+
+//================================
+// Function to signup a new admin
+//================================
+
+bool signupCustomer(const string &name, const string &userId, const string &password)
+{
+    ofstream file("customer_credentials.txt", ios::app); // Open in append mode
+    if (!file.is_open())
+    {
+        cout << "Error opening customer credentials file for signup.\n";
+        return false;
+    }
+
+    // Check if the userId already exists
+    ifstream checkFile("customer_credentials.txt");
+    string storedName, storedUserId, storedPassword;
+    while (checkFile >> storedName >> storedUserId >> storedPassword)
+    {
+        if (storedUserId == userId)
+        {
+            cout << "User  ID already exists. Please choose a different one.\n";
+            return false; // User ID already exists
+        }
+    }
+
+    // Write new customer details to the file
+    file << name << " " << userId << " " << password << endl;
+    cout << "Signup successful! You can now log in.\n";
+    return true;
+}
+
+//===========================================================================================================================================================================
+//                                                                       MAIN FUNCTION
+//===========================================================================================================================================================================
+
+int main()
+{
+    //=======================
+    // CREATE SYSTEM OBJECTS
+    //=======================
+    TrainSystem Trainsystem;
+    StadiumGraph Stadiumsystem;
+    ConcertGraph Concertsystem;
+    BusSystem Bussystem;
+
+    //=======================
+    // INITIALIZE TRAIN SYSTEM
+    //=======================
+
+    Trainsystem.addStation("Karachi", {{"Lahore", 1211}, {"Islamabad", 1411}, {"Quetta", 683.7}, {"Sukkur", 474.5}, {"Multan", 1053.7}, {"Faisalabad", 1281.7}, {"Peshawar", 1483.7}, {"Hyderabad", 163.7}, {"Gwadar", 653.7}, {"Sialkot", 1411}, {"Sargodha", 1411}});
+    Trainsystem.addStation("Lahore", {{"Karachi", 1211}, {"Islamabad", 375}, {"Faisalabad", 128}, {"Multan", 331}, {"Sialkot", 1411}, {"Sargodha", 1411}, {"Peshawar", 189}, {"Sukkur", 1411}, {"Hyderabad", 1411}, {"Gwadar", 1411}, {"Quetta", 1411}, {"Sargodha", 1411}});
+    Trainsystem.addStation("Islamabad", {{"Lahore", 375}, {"Peshawar", 189}, {"Karachi", 1411}, {"Sukkur", 1411}, {"Multan", 1411}, {"Faisalabad", 1411}, {"Hyderabad", 1411}, {"Gwadar", 1411}, {"Quetta", 1411}, {"Sialkot", 1411}, {"Sargodha", 1411}});
+    Trainsystem.addStation("Peshawar", {{"Islamabad", 189}, {"Lahore", 189}, {"Karachi", 1411}, {"Sukkur", 1411}, {"Multan", 1411}, {"Faisalabad", 1411}, {"Hyderabad", 1411}, {"Gwadar", 1411}, {"Quetta", 1411}, {"Sialkot", 1411}, {"Sargodha", 1411}});
+    Trainsystem.addStation("Quetta", {{"Karachi", 683.7}, {"Lahore", 1411}, {"Islamabad", 1411}, {"Sukkur", 1411}, {"Multan", 1411}, {"Faisalabad", 1411}, {"Hyderabad", 1411}, {"Gwadar", 1411}, {"Peshawar", 1411}, {"Sialkot", 1411}, {"Sargodha", 1411}});
+    Trainsystem.addStation("Multan", {{"Karachi", 1053.7}, {"Lahore", 331}, {"Islamabad", 1411}, {"Sukkur", 1411}, {"Faisalabad", 1411}, {"Hyderabad", 1411}, {"Gwadar", 1411}, {"Quetta", 1411}, {"Peshawar", 1411}, {"Sialkot", 1411}, {"Sargodha", 1411}});
+    Trainsystem.addStation("Faisalabad", {{"Karachi", 1281.7}, {"Lahore", 128}, {"Islamabad", 1411}, {"Sukkur", 1411}, {"Multan", 1411}, {"Hyderabad", 1411}, {"Gwadar", 1411}, {"Quetta", 1411}, {"Peshawar", 1411}, {"Sialkot", 1411}, {"Sargodha", 1411}});
+    Trainsystem.addStation("Sukkur", {{"Karachi", 474.5}, {"Lahore", 1411}, {"Islamabad", 1411}, {"Quetta", 1411}, {"Multan", 1411}, {"Faisalabad", 1411}, {"Hyderabad", 1411}, {"Gwadar", 1411}, {"Peshawar", 1411}, {"Sialkot", 1411}, {"Sargodha", 1411}});
+    Trainsystem.addStation("Hyderabad", {{"Karachi", 163.7}, {"Lahore", 1411}, {"Islamabad", 1411}, {"Quetta", 1411}, {"Multan", 1411}, {"Faisalabad", 1411}, {"Sukkur", 1411}, {"Gwadar", 1411}, {"Peshawar", 1411}, {"Sialkot", 1411}, {"Sargodha", 1411}});
+    Trainsystem.addStation("Gwadar", {{"Karachi", 653.7}, {"Lahore", 1411}, {"Islamabad", 1411}, {"Quetta", 1411}, {"Multan", 1411}, {"Faisalabad", 1411}, {"Hyderabad", 1411}, {"Peshawar", 1411}, {"Sialkot", 1411}, {"Sargodha", 1411}, {"Sukkur", 1411}});
+
+    //=========================
+    // INITIALIZE STADIUM SYSTEM
+    //=========================
+
+    Stadiumsystem.addMatch("India", "Pakistan ", "GADDAFI-STADIUM", "Cricket", "2025-01-10", "10:00", "Mumbai    ");
+    Stadiumsystem.addMatch("India", "Australia", "ADELEDE OVAL", "Cricket", "2025-03-12", "10:00", "Delhi     ");
+    Stadiumsystem.addMatch("India", "England  ", "MCG", "Cricket", "2025-01-14", "10:00", "Rawalpindi");
+
+    //=========================
+    // INITIALIZE CONCERT SYSTEM
+    //=========================
+
+    Concertsystem.addConcert("ATIF-ASLAM-CONCERT", "Music", "2025-01-11", "17:00", "Karachi", 250);
+    Concertsystem.addConcert("ALI-ZAFAR-CONCERT", "Music", "2025-01-12", "17:00", "Lahore", 300);
+    Concertsystem.addConcert("ARIJIT-SINGH-CONCERT", "Music", "2025-01-13", "17:00", "Islamabad", 350);
+
+    //=========================
+    // INITIALIZE BUS SYSTEM
+    //=========================
+
+    Bussystem.addStation("Karachi", {{"Lahore", 1211}, {"Islamabad", 1411}, {"Quetta", 683.7}, {"Sukkur", 474.5}, {"Multan", 1053.7}, {"Faisalabad", 1281.7}, {"Peshawar", 1483.7}, {"Hyderabad", 163.7}, {"Gwadar", 653.7}, {"Sialkot", 1411}, {"Sargodha", 1411}});
+    Bussystem.addStation("Lahore", {{"Karachi", 1211}, {"Islamabad", 375}, {"Faisalabad", 128}, {"Multan", 331}, {"Sialkot", 1411}, {"Sargodha", 1411}, {"Peshawar", 189}, {"Sukkur", 1411}, {"Hyderabad", 1411}, {"Gwadar", 1411}, {"Quetta", 1411}, {"Sargodha", 1411}});
+    Bussystem.addStation("Islamabad", {{"Lahore", 375}, {"Peshawar", 189}, {"Karachi", 1411}, {"Sukkur", 1411}, {"Multan", 1411}, {"Faisalabad", 1411}, {"Hyderabad", 1411}, {"Gwadar", 1411}, {"Quetta", 1411}, {"Sialkot", 1411}, {"Sargodha", 1411}});
+    Bussystem.addStation("Peshawar", {{"Islamabad", 189}, {"Lahore", 189}, {"Karachi", 1411}, {"Sukkur", 1411}, {"Multan", 1411}, {"Faisalabad", 1411}, {"Hyderabad", 1411}, {"Gwadar", 1411}, {"Quetta", 1411}, {"Sialkot", 1411}, {"Sargodha", 1411}});
+    Bussystem.addStation("Quetta", {{"Karachi", 683.7}, {"Lahore", 1411}, {"Islamabad", 1411}, {"Sukkur", 1411}, {"Multan", 1411}, {"Faisalabad", 1411}, {"Hyderabad", 1411}, {"Gwadar", 1411}, {"Peshawar", 1411}, {"Sialkot", 1411}, {"Sargodha", 1411}});
+    Bussystem.addStation("Multan", {{"Karachi", 1053.7}, {"Lahore", 331}, {"Islamabad", 1411}, {"Sukkur", 1411}, {"Faisalabad", 1411}, {"Hyderabad", 1411}, {"Gwadar", 1411}, {"Quetta", 1411}, {"Peshawar", 1411}, {"Sialkot", 1411}, {"Sargodha", 1411}});
+    Bussystem.addStation("Faisalabad", {{"Karachi", 1281.7}, {"Lahore", 128}, {"Islamabad", 1411}, {"Sukkur", 1411}, {"Multan", 1411}, {"Hyderabad", 1411}, {"Gwadar", 1411}, {"Quetta", 1411}, {"Peshawar", 1411}, {"Sialkot", 1411}, {"Sargodha", 1411}});
+    Bussystem.addStation("Sukkur", {{"Karachi", 474.5}, {"Lahore", 1411}, {"Islamabad", 1411}, {"Quetta", 1411}, {"Multan", 1411}, {"Faisalabad", 1411}, {"Hyderabad", 1411}, {"Gwadar", 1411}, {"Peshawar", 1411}, {"Sialkot", 1411}, {"Sargodha", 1411}});
+    Bussystem.addStation("Hyderabad", {{"Karachi", 163.7}, {"Lahore", 1411}, {"Islamabad", 1411}, {"Quetta", 1411}, {"Multan", 1411}, {"Faisalabad", 1411}, {"Sukkur", 1411}, {"Gwadar", 1411}, {"Peshawar", 1411}, {"Sialkot", 1411}, {"Sargodha", 1411}});
+    Bussystem.addStation("Gwadar", {{"Karachi", 653.7}, {"Lahore", 1411}, {"Islamabad", 1411}, {"Quetta", 1411}, {"Multan", 1411}, {"Faisalabad", 1411}, {"Hyderabad", 1411}, {"Peshawar", 1411}, {"Sialkot", 1411}, {"Sargodha", 1411}, {"Sukkur", 1411}});
+
+    //=====================================
+    // TAKE USER INPUT FOR ADMIN OR CUSTOMER
+    //=====================================
+
+    int ROLE;
+    do
+    {
+        cout << "========================================\n";
+        cout << "          WELCOME TO TICKET MASTER\n";
+        cout << "========================================\n";
+        cout << "1. ADMIN\n";
+        cout << "2. CUSTOMER\n";
+        cout << "========================================\n";
+        cout << "ENTER YOUR ROLE: \n";
+        cout << "========================================\n";
+        cin >> ROLE;
+
+        string admin_userId, admin_password;
+        int customer_credentials_choice;
+        string customer_userId, customer_password;
+        int system_choice;
+        int train_choice;
+        int stadium_choice;
+        int concert_choice;
+        int bus_choice;
+        int admin_choice;
+        int admin_train_choice, admin_stadium_choice, admin_concert_choice, admin_bus_choice;
+
+        switch (ROLE)
+        {
+        //=======================
+        // ADMINISTRATOR INTERFACE
+        //=======================
+        case 1:
+            cout << "Enter your User ID: ";
+            cin >> admin_userId;
+            cout << "Enter your Password: ";
+            cin >> admin_password;
+
+            // Authenticate admin
+            do
+            {
+                if (authenticateAdmin(admin_userId, admin_password))
+                {
+                    cout << "========================================\n";
+                    cout << "    Access granted to Admin Panel.\n";
+                    cout << "========================================\n";
+                    // Proceed to admin panel
+                    cout << "========================================\n";
+                    cout << "1. TRAIN SYSTEM\n";
+                    cout << "2. STADIUM SYSTEM\n";
+                    cout << "3. CONCERT SYSTEM\n";
+                    cout << "4. BUS SYSTEM\n";
+                    cout << "5. EXIT\n";
+                    cout << "========================================\n";
+                    cout << "ENTER YOUR CHOICE: ";
+                    cin >> admin_choice;
+
+                    switch (admin_choice)
+                    {
+                    case 1:
+                    {
+                        string delete_station;
+                        do
+                        {
+                            cout << "========================================\n";
+                            cout << "|             ADMIN PANEL:             |\n";
+                            cout << "========================================\n";
+                            cout << "1. ADD STATIONS \n2. EDIT STATIONS\n3. DISPLAY STATIONS\n4.SORT THE STATIONS\n5.DELETE A STATION\n6. EXIT\nSELECT AN OPTION: ";
+                            cin >> admin_train_choice;
+
+                            switch (admin_train_choice)
+                            {
+                            case 1:
+                            {
+                                unordered_map<string, double> distances;
+                                string station_name;
+                                int connections;
+
+                                cout << "ENTER THE STATION NAME : ";
+                                cin.ignore(); // Clear the input buffer to handle the next getline properly
+                                getline(cin, station_name);
+
+                                cout << "ENTER THE NUMBER OF CONNECTED STATIONS : ";
+                                cin >> connections;
+
+                                for (int i = 0; i < connections; ++i)
+                                {
+                                    string connectedStation;
+                                    double distance;
+                                    cout << "ENTER THE NAME OF THE CONNECTED STATIONS AND THE DISTANCE : ";
+                                    cin >> connectedStation >> distance;
+                                    distances[connectedStation] = distance;
+                                }
+
+                                Trainsystem.addStation(station_name, distances);
+                                cout << "STATION " << station_name << " ADDED SUCCESSFULLY.\n";
+                            }
+                            break;
+                            case 2:
+                                Trainsystem.editStation();
+                                cout << "===============================" << endl;
+                                cout << "  STATION EDITED SUCCESSFULLY\n";
+                                cout << "===============================" << endl;
+                                break;
+                            case 3:
+                                Trainsystem.displayStations();
+                                break;
+                            case 4:
+                                Trainsystem.Sort();
+                                cout << "===============================" << endl;
+                                cout << "  STATION SORTED SUCCESSFULLY\n";
+                                cout << "===============================" << endl;
+                                break;
+                            case 5:
+
+                                cout << "Enter the name of the station you want to delete";
+                                cin >> delete_station;
+                                Trainsystem.deleteStation(delete_station);
+                                cout << "===============================" << endl;
+                                cout << " STATION DELETED SUCCESSFULLY\n";
+                                cout << "===============================" << endl;
+                                break;
+                            case 6:
+                                cout << "===============================" << endl;
+                                cout << "    EXITING ADMIN PANEL.\n";
+                                cout << "===============================" << endl;
+                                break;
+                            default:
+                                cout << "===============================" << endl;
+                                cout << "   INVALID CHOICE TRY AGAIN.\n";
+                                cout << "===============================" << endl;
+                            }
+                        } while (admin_train_choice != 6);
+                    }
+                    break;
+                    case 2:
+                    {
+                        string stadium_to_delete;
+                        do
+                        {
+                            cout << "========================================\n";
+                            cout << "|             ADMIN PANEL:             |\n";
+                            cout << "========================================\n";
+                            cout << "1. ADD MATCH \n2. DISPLAY MATCHES\n3. DELETE MATCH DATA \n 4.EXIT\nSELECT AN OPTION: ";
+                            cin >> admin_stadium_choice;
+
+                            switch (admin_stadium_choice)
+                            {
+                            case 1:
+                            {
+                                string name, type, date, time, venue, Team1, Team2;
+                                cout << "Enter stadium name: ";
+                                cin.ignore();
+                                getline(cin, name);
+                                cout << "Enter Team1: ";
+                                getline(cin, Team1);
+                                cout << "Enter Team2: ";
+                                getline(cin, Team2);
+                                cout << "Enter match type: ";
+                                getline(cin, type);
+                                cout << "Enter match date (YYYY-MM-DD): ";
+                                getline(cin, date);
+                                cout << "Enter match time (HH:MM): ";
+                                getline(cin, time);
+                                cout << "Enter match venue: ";
+                                getline(cin, venue);
+                                Stadiumsystem.addMatch(Team1, Team2, name, type, date, time, venue);
+
+                                cout << "MATCH" << Team1 << "vs" << Team2 << " ADDED SUCCESSFULLY .\n"; // Confirmation message
+                                break;
+                            }
+                            case 2:
+                                Stadiumsystem.displayUpcomingMatches();
+                                break;
+                            case 3:
+                                cout << "ENTER THE NAME OF THE STADIUM ";
+                                cin.ignore();
+                                getline(cin, stadium_to_delete);
+                                Stadiumsystem.deleteMatch(stadium_to_delete);
+                                break;
+                            case 4:
+                                cout << "Exiting admin panel.\n";
+                                break;
+                            default:
+                                cout << "Invalid choice. Try again.\n";
+                            }
+                        } while (admin_stadium_choice != 3);
+                    }
+                    break;
+                    case 3:
+                    {
+                        do
+                        {
+                            cout << "========================================\n";
+                            cout << "|             ADMIN PANEL:             |\n";
+                            cout << "========================================\n";
+                            cout << "1. ADD CONCERT \n2. DISPLAY CONCERTS\n3. EXIT\nSELECT AN OPTION: ";
+                            cin >> admin_concert_choice;
+
+                            switch (admin_concert_choice)
+                            {
+                            case 1:
+                            {
+                                string name, type, date, time, venue;
+                                double price;
+                                cout << "Enter concert name: ";
+                                cin.ignore();
+                                getline(cin, name);
+                                cout << "Enter concert type: ";
+                                getline(cin, type);
+                                cout << "Enter concert date (YYYY-MM-DD): ";
+                                getline(cin, date);
+                                cout << "Enter concert time (HH:MM): ";
+                                getline(cin, time);
+                                cout << "Enter concert venue: ";
+                                getline(cin, venue);
+                                cout << "Enter concert price: ";
+                                cin >> price;
+
+                                Concertsystem.addConcert(name, type, date, time, venue, price);
+                                cout << "Concert added successfully.\n";
+                                break;
+                            }
+                            case 2:
+                                Concertsystem.displayConcerts();
+                                break;
+                            case 3:
+                                cout << "Exiting admin panel.\n";
+                                break;
+                            default:
+                                cout << "Invalid choice. Try again.\n";
+                            }
+                        } while (admin_concert_choice != 3);
+                    }
+                    break;
+                    case 4:
+                    {
+                        do
+                        {
+                            cout << "========================================\n";
+                            cout << "|             ADMIN PANEL:             |\n";
+                            cout << "========================================\n";
+                            cout << "1. ADD STATIONS \n2. EDIT STATIONS\n3. DISPLAY STATIONS\n4.SORT THE STATIONS\n5.DELETE A Station_BUS\n6. EXIT\nSELECT AN OPTION: ";
+                            cin >> admin_bus_choice;
+                            string delete_station;
+                            switch (admin_bus_choice)
+                            {
+                            case 1:
+                            {
+                                unordered_map<string, double> distances;
+                                string station_name;
+                                int connections;
+
+                                cout << "ENTER THE STATION NAME : ";
+                                cin.ignore(); // Clear the input buffer to handle the next getline properly
+                                getline(cin, station_name);
+
+                                cout << "ENTER THE NUMBER OF CONNECTED STATIONS : ";
+                                cin >> connections;
+
+                                for (int i = 0; i < connections; ++i)
+                                {
+                                    string connectedStation;
+                                    double distance;
+                                    cout << "ENTER THE NAME OF THE CONNECTED STATIONS AND THE DISTANCE : ";
+                                    cin >> connectedStation >> distance;
+                                    distances[connectedStation] = distance;
+                                }
+
+                                Bussystem.addStation(station_name, distances);
+                                cout << "Station_BUS " << station_name << " ADDED SUCCESSFULLY.\n";
+                            }
+                            break;
+                            case 2:
+                                Bussystem.editStation();
+                                cout << "===============================" << endl;
+                                cout << "  Station_BUS EDITED SUCCESSFULLY\n";
+                                cout << "===============================" << endl;
+                                break;
+                            case 3:
+                                Bussystem.displayStations();
+                                break;
+                            case 4:
+                                Bussystem.Sort();
+                                cout << "===============================" << endl;
+                                cout << "  Station_BUS SORTED SUCCESSFULLY\n";
+                                cout << "===============================" << endl;
+                                break;
+                            case 5:
+
+                                cout << "Enter the name of the Station_BUS you want to delete";
+                                cin >> delete_station;
+                                Bussystem.deleteStation(delete_station);
+                                cout << "===============================" << endl;
+                                cout << " Station_BUS DELETED SUCCESSFULLY\n";
+                                cout << "===============================" << endl;
+                                break;
+                            case 6:
+                                cout << "===============================" << endl;
+                                cout << "    EXITING ADMIN PANEL.\n";
+                                cout << "===============================" << endl;
+                                break;
+                            default:
+                                cout << "===============================" << endl;
+                                cout << "   INVALID CHOICE TRY AGAIN.\n";
+                                cout << "===============================" << endl;
+                            }
+                        } while (admin_bus_choice != 6);
+                    }
+                    break;
+                    }
                 }
                 else
                 {
-                    temp->Concert_reservation->OCUPATION.hall[hall_no - 1].Concert_seats[seat_no - 1].isBooked = true;
-                    cout << "SEAT BOOKED SUCCESSFULLY\n";
+                    cout << "Access denied. Invalid User ID or Password.\n";
                 }
-            }
+            } while (admin_choice != 5);
             break;
+        case 2:
+            cout << "============\n";
+            cout << "1. LOGIN\n";
+            cout << "2. SIGNUP\n";
+            cout << "============\n";
+            cout << "ENTER YOUR CHOICE: ";
+            cin >> customer_credentials_choice;
+            if (customer_credentials_choice == 1)
+            {
 
-        case 2: // Book a hall
-            if (temp->Concert_reservation->OCUPATION.isBooked)
-            {
-                cout << "SORRY, THE CONCERT IS FULLY BOOKED\n";
-                return;
-            }
-            cout << "AVAILABLE HALLS\n";
-            for (int i = 0; i < 5; i++)
-            {
-                if (!temp->Concert_reservation->OCUPATION.hall[i].isBooked)
+                cout << "Enter your User ID: ";
+                cin >> customer_userId;
+                cout << "Enter your Password: ";
+                cin >> customer_password;
+
+                // Authenticate customer
+                if (authenticateCustomer(customer_userId, customer_password))
                 {
-                    cout << "HALL NUMBER :" << i + 1 << endl;
+                    cout << "========================================\n";
+                    cout << "    Access granted to Customer Panel.\n";
+                    cout << "========================================\n";
+                    // Proceed to customer panel
+
+                    do
+                    {
+                        cout << "ENTER YOUR CHOICE\n";
+                        cout << "1. TRAIN SYSTEM\n";
+                        cout << "2. STADIUM SYSTEM\n";
+                        cout << "3. CONCERT SYSTEM\n";
+                        cout << "4. BUS SYSTEM\n";
+                        cout << "5. EXIT\n";
+                        cin >> system_choice;
+                        switch (system_choice)
+                        {
+                        case 1:
+                        {
+                            do
+                            {
+                                cout << "========================================\n";
+                                cout << "        TRAIN TICKET RESERVATION        \n";
+                                cout << "========================================\n";
+                                cout << "1. Reserve Ticket\n2. Delete Ticket\n3. View Reservations\n4. Exit\n";
+                                cout << "========================================\n";
+                                cout << "Select an option: ";
+                                cin >> train_choice;
+
+                                switch (train_choice)
+                                {
+                                case 1:
+                                    Trainsystem.reserveTicket();
+                                    break;
+                                case 2:
+                                    Trainsystem.deleteTicket();
+                                    break;
+                                case 3:
+                                    Trainsystem.displayReservations();
+                                    break;
+                                case 4:
+                                    cout << "===========================================\n";
+                                    cout << "EXITING THE TRAIN TICKET RESERVATION PANEL.\n";
+                                    cout << "===========================================\n";
+                                    break;
+                                default:
+                                    cout << "========================================\n";
+                                    cout << "       INVALID CHOICE .TRY AGAIN\n";
+                                    cout << "========================================\n";
+                                }
+                            } while (train_choice != 4);
+                        }
+                        break;
+                        case 2:
+                        {
+                            do
+                            {
+                                cout << "========================================\n";
+                                cout << "         MATCH TICKET RESERVATION        \n";
+                                cout << "========================================\n";
+                                cout << "1. Reserve Ticket\n2. View Reservations\n3. Delete Stadium_Reservation\n4. Exit\n";
+                                cout << "Select an option: ";
+                                cin >> stadium_choice;
+
+                                switch (stadium_choice)
+                                {
+                                case 1:
+                                {
+                                    Stadiumsystem.displayUpcomingMatches();
+                                    string stadiumName, name, gender;
+                                    int age;
+                                    cout << "Enter stadium name: ";
+                                    cin.ignore();
+                                    getline(cin, stadiumName);
+                                    cout << "Enter your name: ";
+                                    getline(cin, name);
+                                    cout << "Enter your gender: ";
+                                    getline(cin, gender);
+                                    cout << "Enter your age: ";
+                                    cin >> age;
+
+                                    Stadiumsystem.reserveTicket(stadiumName, name, gender, age);
+                                    break;
+                                }
+                                case 2:
+                                {
+                                    string TicketID;
+                                    cout << "Enter ticket ID to view reservations: ";
+                                    cin.ignore();
+                                    getline(cin, TicketID);
+                                    Stadiumsystem.displayReservations(TicketID);
+                                    break;
+                                }
+                                case 3:
+                                {
+                                    string stadiumName, ticketID;
+                                    cout << "Enter stadium name to delete reservation: ";
+                                    cin.ignore();
+                                    getline(cin, stadiumName);
+                                    cout << "Enter ticket ID to delete: ";
+                                    getline(cin, ticketID);
+                                    Stadiumsystem.deleteReservation(stadiumName, ticketID);
+                                    break;
+                                }
+                                case 4:
+                                {
+                                    cout << "===========================================\n";
+                                    cout << "EXITING THE MATCH TICKET RESERVATION PANEL.\n";
+                                    cout << "===========================================\n";
+                                    break;
+                                }
+                                default:
+                                    cout << "===========================================\n";
+                                    cout << "      Invalid choice. Try again.\n";
+                                    cout << "===========================================\n";
+                                    break;
+                                }
+                            } while (stadium_choice != 4);
+                        }
+                        break;
+                        case 3:
+                            do
+                            {
+                                cout << "========================================\n";
+                                cout << "         CONCERT TICKET RESERVATION        \n";
+                                cout << "========================================\n";
+                                cout << "1. Reserve Ticket\n2. View Reservations\n3. Delete Reservation\n4. Exit\n";
+                                cout << "Select an option: ";
+                                cin >> concert_choice;
+
+                                switch (concert_choice)
+                                {
+                                case 1:
+                                {
+
+                                    string concertName, name, gender;
+                                    int age;
+                                    cout << "Enter concert name: ";
+                                    cin.ignore();
+                                    getline(cin, concertName);
+                                    cout << "Enter your name: ";
+                                    getline(cin, name);
+                                    cout << "Enter your gender: ";
+                                    getline(cin, gender);
+                                    cout << "Enter your age: ";
+                                    cin >> age;
+
+                                    Concertsystem.reserveTicket(concertName, name, gender, age);
+
+                                    break;
+                                }
+                                case 2:
+                                {
+                                    string TicketID;
+                                    cout << "Enter ticket ID to view reservations: ";
+                                    cin.ignore();
+                                    getline(cin, TicketID);
+                                    Concertsystem.displayReservations(TicketID);
+                                    break;
+                                }
+                                case 3:
+                                {
+                                    string concertName, ticketID;
+                                    cout << "Enter concert name to delete reservation: ";
+                                    cin.ignore();
+                                    getline(cin, concertName);
+                                    cout << "Enter ticket ID to delete: ";
+                                    getline(cin, ticketID);
+                                    Concertsystem.deleteReservation(concertName, ticketID);
+                                    break;
+                                }
+                                case 4:
+                                    cout << "EXITING THE CONCERT TICKETING PANEL.\n";
+                                    break;
+                                default:
+                                    cout << "Invalid choice. Try again.\n";
+                                }
+                            } while (concert_choice != 4);
+                            break;
+                        case 4:
+                        {
+                            do
+                            {
+                                cout << "========================================\n";
+                                cout << "         BUS TICKET Reservation_BUS       \n";
+                                cout << "========================================\n";
+                                cout << "1. Reserve Ticket\n2. Delete Ticket\n3. View Reservations\n4. Exit\n";
+                                cout << "========================================\n";
+                                cout << "Select an option: ";
+                                cin >> bus_choice;
+
+                                switch (bus_choice)
+                                {
+                                case 1:
+                                    Bussystem.reserveTicket();
+                                    break;
+                                case 2:
+                                    Bussystem.deleteTicket();
+                                    break;
+                                case 3:
+                                    Bussystem.displayReservations();
+                                    break;
+                                case 4:
+                                    cout << "===========================================\n";
+                                    cout << "EXITING THE BUS TICKET Reservation_BUSPANEL.\n";
+                                    cout << "===========================================\n";
+                                    break;
+                                default:
+                                    cout << "========================================\n";
+                                    cout << "       INVALID CHOICE .TRY AGAIN\n";
+                                    cout << "========================================\n";
+                                }
+                            } while (bus_choice != 4);
+                        }
+                        break;
+                        case 5:
+                            cout << "EXITING THE CUSTOMER PANEL" << endl;
+                            break;
+                        }
+                    } while (system_choice != 5);
+                }
+                else
+                {
+                    cout << "Access denied. Invalid User ID or Password.\n";
+                    return 1; // Exit the program or handle accordingly
                 }
             }
-            cout << "ENTER THE HALL NUMBER: ";
-            cin >> hall_no;
-            if (hall_no < 1 || hall_no > 5 || temp->Concert_reservation->OCUPATION.hall[hall_no - 1].isBooked)
+            else if (customer_credentials_choice == 2)
             {
-                cout << "INVALID HALL NUMBER [please enter a number from the above given list]\n";
-                return;
+                string name, userId, password;
+                cout << "Enter your Name: ";
+                cin >> name;
+                cout << "Enter your User ID: ";
+                cin >> userId;
+                cout << "Enter your Password: ";
+                cin >> password;
+
+                // Signup customer
+                if (!signupCustomer(name, userId, password))
+                {
+                    cout << "Signup failed. Please try again.\n";
+                    break;
+                }
+                else
+                {
+                    cout << "Signup successful. Please login to continue.\n";
+                    break;
+                }
             }
             else
             {
-                temp->Concert_reservation->OCUPATION.hall[hall_no - 1].isBooked = true;
-                cout << "HALL BOOKED SUCCESSFULLY\n";
+                cout << "Invalid choice.\n";
+                break;
             }
-            break;
 
-        case 3: // Book an event
-            if (temp->Concert_reservation->OCUPATION.isBooked)
-            {
-                cout << "SORRY, THE CONCERT IS FULLY BOOKED\n";
-                return;
-            }
-            temp->Concert_reservation->OCUPATION.isBooked = true;
-            cout << "EVENT BOOKED SUCCESSFULLY\n";
             break;
-
+        case 3:
+            cout << "EXITING THE TICKET MASTER" << endl;
+            break;
         default:
             cout << "INVALID CHOICE\n";
             break;
         }
-    }
-
-    // User: Delete a Concert_reservation
-    void deleteTicket()
-    {
-        string Concert_ticketID;
-        cout << "ENTER THE TICKET ID YOU WANT TO DELETE: ";
-        cin >> Concert_ticketID;
-
-        if (Concert_reservationMap.find(Concert_ticketID) == Concert_reservationMap.end())
-        {
-            cout << "Ticket not found.\n";
-            return;
-        }
-
-        Concert_reservationRoot = deleteConcert_Reservation(Concert_reservationRoot, Concert_ticketID);
-        Concert_reservationMap.erase(Concert_ticketID);
-        cout << "Ticket deleted successfully.\n";
-    }
-
-    // User: Display all Concert_reservations
-    void displayConcert_Reservations()
-    {
-        if (!Concert_reservationRoot)
-        {
-            cout << "NO RESERVATIONS FOUND.\n";
-            return;
-        }
-        displayConcert_ReservationsInOrder(Concert_reservationRoot);
-    }
-};
-
-
+    } while (ROLE != 3);
+}
 
 //===========================================================================================================================================================================
-//                                                          END OF CONCERT SYSTEM
 //===========================================================================================================================================================================
-
-
-
-
-
-
-
-//============================================================STADIUM RESERVATION SYSTEM================================================================================
-
-
-
-
+//                                                                                     THE END
+//===========================================================================================================================================================================
+//===========================================================================================================================================================================
