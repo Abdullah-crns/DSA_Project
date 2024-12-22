@@ -196,7 +196,7 @@ private:
 public:
     TrainSystem() : stationHead(nullptr), reservationRoot(nullptr) {}
 
-    // Admin: Add station to the linked list
+    //===========================================================================Admin functions================================================================================================
     void addStation(const string &name, const unordered_map<string, double> &distances)
     {
         Station *newStation = new Station{name, distances, nullptr};
@@ -238,15 +238,15 @@ public:
             cout << "No stations available.\n";
             return;
         }
-        cout << "==========================\n";
-        cout << "AVAILABLE STATIONS:\n";
-        cout << "==========================\n";
+        cout << "========================================\n";
+        cout << "          AVAILABLE STATIONS:\n";
+        cout << "========================================\n";
         while (temp)
         {
             cout << "- " << temp->name << "\n";
             temp = temp->next;
         }
-        cout << "==========================\n";
+        cout << "========================================\n";
     }
 
     // Admin: Edit a station
@@ -275,19 +275,122 @@ public:
         }
         cout << "Station distances updated successfully.\n";
     }
+    Station *merge(Station *left, Station *right)
+    {
+        if (!left)
+            return right;
+        if (!right)
+            return left;
 
-    // User: Reserve a ticket
+        if (left->name < right->name)
+        {
+            left->next = merge(left->next, right);
+            return left;
+        }
+        else
+        {
+            right->next = merge(left, right->next);
+            return right;
+        }
+    }
+    void Sort()
+    {
+        mergeSort(&stationHead);
+    }
+
+    // Function to split the linked list into two halves
+    void split(Station *source, Station **front, Station **back)
+    {
+        Station *fast;
+        Station *slow;
+        slow = source;
+        fast = source->next;
+
+        // Move fast two nodes and slow one node
+        while (fast != nullptr)
+        {
+            fast = fast->next;
+            if (fast != nullptr)
+            {
+                slow = slow->next;
+                fast = fast->next;
+            }
+        }
+
+        // Slow is before the midpoint, so split it in two
+        *front = source;
+        *back = slow->next;
+        slow->next = nullptr;
+    }
+
+    // Function to perform merge sort on the linked list
+    void mergeSort(Station **headRef)
+    {
+        Station *head = *headRef;
+        Station *left;
+        Station *right;
+
+        // Base case: if the list is empty or has one node
+        if (!head || !head->next)
+        {
+            return;
+        }
+
+        // Split the list into two halves
+        split(head, &left, &right);
+
+        // Recursively sort the sublists
+        mergeSort(&left);
+        mergeSort(&right);
+
+        // Merge the sorted lists
+        *headRef = merge(left, right);
+    }
+    // Function to delete a specific station from the linked list
+    void deleteStation(const string &stationName)
+    {
+        Station *temp = stationHead;
+        Station *prev = nullptr;
+
+        // Traverse the list to find the station
+        while (temp != nullptr && temp->name != stationName)
+        {
+            prev = temp;
+            temp = temp->next;
+        }
+
+        // If the station was not found
+        if (temp == nullptr)
+        {
+            cout << "Station not found.\n";
+            return;
+        }
+
+        // If the station is the head of the list
+        if (prev == nullptr)
+        {
+            stationHead = temp->next; // Change head
+        }
+        else
+        {
+            prev->next = temp->next; // Unlink the station
+        }
+
+        delete temp; // Free memory
+    }
+
+    //================================================================================================================================================================================================================================
     void reserveTicket()
     {
         displayStations();
         string departureStation, arrivalStation, name, gender;
         int coach_number, cabin_number, seat_number;
         Coaches Coach_no[15];
-
-        cout << "ENTER YOUR CURRENT STATION NAME: \n";
-        cout << "=================================\n";
+        cout << "========================================\n";
+        cout << "    ENTER YOUR CURRENT STATION NAME: \n";
+        cout << "========================================\n";
         cin >> departureStation;
-        cout << "=================================\n";
+        cout << "========================================\n";
 
         // Find the departure station in the linked list
         Station *departureNode = stationHead;
@@ -305,7 +408,7 @@ public:
 
         // Display the list of connected cities for the departure station
         cout << "CITIES CONNECTED TO " << departureStation << ":\n";
-        cout << "==============================\n";
+        cout << "========================================\n";
         for (const auto &pair : departureNode->distances)
         {
             cout << "- " << pair.first << "\n"; // Display connected cities
@@ -332,13 +435,13 @@ public:
         cin >> gender;
 
         int reservation_option;
-        cout << "======================================\n";
+        cout << "========================================\n";
         cout << "1. RESERVE A SEAT" << endl;
         cout << "2. RESERVE A CABIN [family seat]" << endl;
         cout << "3. RESERVE A COACH" << endl;
-        cout << "======================================\n";
-        cout << "PLEASE ENTER YOUR RESERVATION OPTION : ";
-        cout << "======================================\n";
+        cout << "========================================\n";
+        cout << "  PLEASE ENTER YOUR RESERVATION OPTION  \n";
+        cout << "========================================\n";
         cin >> reservation_option;
 
         if (reservation_option == 1)
@@ -348,12 +451,13 @@ public:
             {
                 if (!Coach_no[i].isbooked)
                 {
-                    cout << "| COACH NUMBER : " << i + 1 << " |" << endl;
+                    cout << " COACH NUMBER : " << i + 1 << " " << endl;
                 }
             }
 
-            cout << "--------------------------------------\n";
-            cout << "PLEASE ENTER THE COACH NUMBER : ";
+            cout << "========================================\n";
+            cout << "      PLEASE ENTER THE COACH NUMBER : \n";
+            cout << "========================================\n";
             cin >> coach_number;
 
             if (coach_number < 1 || coach_number > 15)
@@ -371,8 +475,9 @@ public:
                 }
             }
 
-            cout << "--------------------------------------\n";
-            cout << "PLEASE ENTER THE CABIN NUMBER: ";
+            cout << "========================================\n";
+            cout << "     PLEASE ENTER THE CABIN NUMBER: \n";
+            cout << "========================================\n";
             cin >> cabin_number;
 
             if (cabin_number < 1 || cabin_number > 12)
@@ -389,8 +494,9 @@ public:
                     cout << "SEAT NUMBER: " << i + 1 << endl;
                 }
             }
-
-            cout << "PLEASE ENTER THE SEAT NUMBER: ";
+            cout << "========================================\n";
+            cout << "     PLEASE ENTER THE SEAT NUMBER: \n";
+            cout << "========================================\n";
             cin >> seat_number;
 
             if (seat_number < 1 || seat_number > 6)
@@ -422,18 +528,20 @@ public:
         }
         else if (reservation_option == 2)
         {
-            cout << "--------------------------------------\n";
-            cout << "AVAILABLE COACHES" << endl;
+            cout << "========================================\n";
+            cout << "           AVAILABLE COACHES" << endl;
+            cout << "========================================\n";
             for (int i = 0; i < 15; i++)
             {
                 if (!Coach_no[i].isbooked)
                 {
-                    cout << "| COACH NUMBER: " << i + 1 << " |" << endl;
+                    cout << " COACH NUMBER: " << i + 1 << " " << endl;
                 }
             }
 
-            cout << "--------------------------------------\n";
-            cout << "PLEASE ENTER THE COACH NUMBER: ";
+            cout << "========================================\n";
+            cout << "    PLEASE ENTER THE COACH NUMBER: ";
+            cout << "========================================\n";
             cin >> coach_number;
 
             if (coach_number < 1 || coach_number > 15)
@@ -451,8 +559,9 @@ public:
                 }
             }
 
-            cout << "--------------------------------------\n";
-            cout << "PLEASE ENTER THE CABIN NUMBER: ";
+            cout << "========================================\n";
+            cout << "    PLEASE ENTER THE CABIN NUMBER: \n";
+            cout << "========================================\n";
             cin >> cabin_number;
 
             if (cabin_number < 1 || cabin_number > 12)
@@ -481,7 +590,9 @@ public:
         }
         else if (reservation_option == 3)
         {
-            cout << "AVAILABLE COACHES" << endl;
+            cout << "========================================\n";
+            cout << "          AVAILABLE COACHES" << endl;
+            cout << "========================================\n";
             for (int i = 0; i < 15; i++)
             {
                 if (!Coach_no[i].isbooked)
@@ -527,7 +638,8 @@ public:
         // Calculate the distance and price
 
         // Display the reservation details
-        cout << "TICKET RESERVED SUCCESSFULY!\n";
+        cout << "========================================\n";
+        cout << "       TICKET RESERVED SUCCESSFULY!\n";
         cout << "========================================\n";
         cout << "| TICKET ID:         | " << ticketID << endl;
         cout << "| NAME:              | " << name << endl;
@@ -595,13 +707,17 @@ int main()
     {
         cout << "\n1. Admin Panel\n2. User Panel\n3. Exit\nSelect your role: ";
         cin >> roleChoice;
+        string delete_station;
 
         if (roleChoice == 1)
         {
             int adminChoice;
             do
             {
-                cout << "\nAdmin Panel:\n1. Add Station\n2. Edit Station\n3. Display Stations\n4. Exit\nSelect an option: ";
+                cout << "========================================\n";
+                cout << "|             ADMIN PANEL:             |\n";
+                cout << "========================================\n";
+                cout << "1. ADD STATIONS \n2. EDIT STATIONS\n3. DISPLAY STATIONS\n4.SORT THE STATIONS\n5.DELETE A STATION\n6. EXIT\nSELECT AN OPTION: ";
                 cin >> adminChoice;
 
                 switch (adminChoice)
@@ -612,39 +728,61 @@ int main()
                     string station_name;
                     int connections;
 
-                    cout << "Enter station name: ";
+                    cout << "ENTER THE STATION NAME : ";
                     cin.ignore(); // Clear the input buffer to handle the next getline properly
                     getline(cin, station_name);
 
-                    cout << "Enter number of connections: ";
+                    cout << "ENTER THE NUMBER OF CONNECTED STATIONS : ";
                     cin >> connections;
 
                     for (int i = 0; i < connections; ++i)
                     {
                         string connectedStation;
                         double distance;
-                        cout << "Enter connected station name and distance: ";
+                        cout << "ENTER THE NAME OF THE CONNECTED STATIONS AND THE DISTANCE : ";
                         cin >> connectedStation >> distance;
                         distances[connectedStation] = distance;
                     }
 
                     system.addStation(station_name, distances);
-                    cout << "Station " << station_name << " added successfully.\n";
+                    cout << "STATION " << station_name << " ADDED SUCCESSFULLY.\n";
                 }
                 break;
                 case 2:
                     system.editStation();
+                    cout << "===============================" << endl;
+                    cout << "  STATION EDITED SUCCESSFULLY\n";
+                    cout << "===============================" << endl;
                     break;
                 case 3:
                     system.displayStations();
                     break;
                 case 4:
-                    cout << "Exiting Admin Panel.\n";
+                    system.Sort();
+                    cout << "===============================" << endl;
+                    cout << "  STATION SORTED SUCCESSFULLY\n";
+                    cout << "===============================" << endl;
+                    break;
+                case 5:
+
+                    cout << "Enter the name of the station you want to delete";
+                    cin >> delete_station;
+                    system.deleteStation(delete_station);
+                    cout << "===============================" << endl;
+                    cout << " STATION DELETED SUCCESSFULLY\n";
+                    cout << "===============================" << endl;
+                    break;
+                case 6:
+                    cout << "===============================" << endl;
+                    cout << "    EXITING ADMIN PANEL.\n";
+                    cout << "===============================" << endl;
                     break;
                 default:
-                    cout << "Invalid choice. Try again.\n";
+                    cout << "===============================" << endl;
+                    cout << "   INVALID CHOICE TRY AGAIN.\n";
+                    cout << "===============================" << endl;
                 }
-            } while (adminChoice != 4);
+            } while (adminChoice != 6);
         }
         else if (roleChoice == 2)
         {
@@ -671,19 +809,26 @@ int main()
                     system.displayReservations();
                     break;
                 case 4:
+                    cout << "===========================================\n";
                     cout << "EXITING THE TRAIN TICKET RESERVATION PANEL.\n";
+                    cout << "===========================================\n";
                     break;
                 default:
-                    cout << "Invalid choice. Try again.\n";
+                    cout << "========================================\n";
+                    cout << "       INVALID CHOICE .TRY AGAIN\n";
+                    cout << "========================================\n";
                 }
             } while (userChoice != 4);
         }
         else if (roleChoice != 3)
         {
-            cout << "Invalid role. Try again.\n";
+            cout << "========================================\n";
+            cout << "  INVALID ROLE CHOSEN (admin/customer)\n";
+            cout << "========================================\n";
         }
     } while (roleChoice != 3);
-
-    cout << "Exiting the system. Goodbye!\n";
+    cout << "========================================\n";
+    cout << "      EXITING THE SYSTEM [GOODBYE] !\n";
+    cout << "========================================\n";
     return 0;
 }
