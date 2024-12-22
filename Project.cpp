@@ -493,7 +493,7 @@ public:
         cout << "2. RESERVE A CABIN [family seat]" << endl;
         cout << "3. RESERVE A COACH" << endl;
         cout << "========================================\n";
-        cout << "  PLEASE ENTER YOUR Reservation_TrainOPTION  \n";
+        cout << "  PLEASE ENTER YOUR RESERVATION OPTION  \n";
         cout << "========================================\n";
         cin >> reservation_option;
 
@@ -684,7 +684,7 @@ public:
         }
         else
         {
-            cout << "INVALID Reservation_TrainOPTION" << endl;
+            cout << "INVALID RESERVATION OPTION" << endl;
             return;
         }
 
@@ -704,7 +704,6 @@ public:
         cout << "| COACH NUMBER:      | " << coach_number << endl;
         cout << "| CABIN NUMBER:      | " << cabin_number << endl;
         cout << "| SEAT NUMBER:       | " << seat_number << endl;
-        cout << "| DISTANCE:          | " << distance << " PKR\n";
         cout << "========================================\n";
     }
 
@@ -726,7 +725,7 @@ public:
 
         reservationRoot = deleteReservation(reservationRoot, ticketID);
         reservationMap.erase(ticketID);
-        cout << "Reservation_TrainWITH TICKET ID " << ticketID << " DELETED SUCCESSFULLY.\n";
+        cout << "RESERVATION WITH TICKET ID [ " << ticketID << " ] DELETED SUCCESSFULLY.\n";
     }
 
     //============================================================
@@ -1013,8 +1012,8 @@ private:
                 cout << "| TICKET ID:            | " << root->reservation_BUS->ticketID << endl;
                 cout << "| NAME:                 | " << root->reservation_BUS->name << endl;
                 cout << "| GENDER:               | " << root->reservation_BUS->gender << endl;
-                cout << "| Station_BUS OF DEPARTURE: | " << root->reservation_BUS->departureStation << endl;
-                cout << "| Station_BUS OF ARRIVAL:   | " << root->reservation_BUS->arrivalStation << endl;
+                cout << "| STATION OF DEPARTURE: | " << root->reservation_BUS->departureStation << endl;
+                cout << "| STATION OF ARRIVAL:   | " << root->reservation_BUS->arrivalStation << endl;
                 cout << "| BUS NUMBER:           | " << root->reservation_BUS->bus[i].busNumber << endl;
                 cout << "| PRICE:                | " << (root->reservation_BUS->price) * (44) << " PKR\n";
                 cout << "========================================\n";
@@ -1035,8 +1034,8 @@ private:
                         cout << "| TICKET ID:            | " << root->reservation_BUS->ticketID << endl;
                         cout << "| NAME:                 | " << root->reservation_BUS->name << endl;
                         cout << "| GENDER:               | " << root->reservation_BUS->gender << endl;
-                        cout << "| Station_BUS OF DEPARTURE: | " << root->reservation_BUS->departureStation << endl;
-                        cout << "| Station_BUS OF ARRIVAL:   | " << root->reservation_BUS->arrivalStation << endl;
+                        cout << "| STATION OF DEPARTURE: | " << root->reservation_BUS->departureStation << endl;
+                        cout << "| STATION OF ARRIVAL:   | " << root->reservation_BUS->arrivalStation << endl;
                         cout << "| SEAT NUMBER:          | " << j + 1 << endl;
                         cout << "| PRICE:                | " << (root->reservation_BUS->price) << " PKR\n";
                         cout << "========================================\n";
@@ -1121,13 +1120,13 @@ public:
             return;
         }
 
-        cout << "Editing distances for Station_BUS: " << stationName << endl;
+        cout << "EDITING DISTANCE FOR STATION : " << stationName << endl;
         for (auto &pair : temp->distances)
         {
             cout << "Enter distance to " << pair.first << " (current: " << pair.second << " km): ";
             cin >> pair.second;
         }
-        cout << "Station_BUS distances updated successfully.\n";
+        cout << "STATION DISTANCES UPDATED SUCCESSFULLY.\n";
     }
     Station_BUS *merge(Station_BUS *left, Station_BUS *right)
     {
@@ -1370,7 +1369,6 @@ public:
             cout << "| PRICE:             | " << prices << " PKR\n";
             cout << "| BUS NUMBER:        | " << coach_number << endl;
             cout << "| SEAT NUMBER:       | " << seat_number << endl;
-            cout << "| DISTANCE:          | " << distance << " PKR\n";
             cout << "========================================\n";
             return;
         }
@@ -1612,7 +1610,7 @@ public:
 
         int choice;
         cout << "========================================\n";
-        cout << "Choose booking type:\n";
+        cout << "          Choose booking type:\n";
         cout << "========================================\n";
         cout << "1. Book Entire Event\n";
         cout << "2. Book a Concert_Hall\n";
@@ -2329,7 +2327,7 @@ public:
             if (it->ticketID == ticketID)
             {
                 it = stadium.reservations.erase(it); // Remove reservation
-                cout << "Stadium_Reservation with ticket ID " << ticketID << " deleted successfully.\n";
+                cout << "RESERVATION WITH TICKET ID  " << ticketID << " DELETED SUCCESSFULLY.\n";
                 return;
             }
             else
